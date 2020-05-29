@@ -1,8 +1,9 @@
 {
-  "name": "material-starter-kit",
-  "version": "0.2.0",
+  "name": "portfolio",
+  "version": "0.0.1",
   "main": "index.js",
-  "description": "Built with Material Starter Kit, a file template to get you up and running with Material Components for the Web.",
+  "description": "Cody Rivera personal portfolio frontend",
+  "license": "Apache-2.0",
   "scripts": {
     "build": "webpack -p",
     "start": "webpack-dev-server --mode=production"
