@@ -13,3 +13,20 @@
 //   @include mdc-button-ink-color(lightblue);
 //   @include mdc-states(lightblue);
 // }
+
+#contents {
+    margin-left: auto;
+    margin-right: auto;
+    width: 85%;
+    @extend .mdc-typography;
+}
+
+h1 {
+    text-align: center;
+    @extend .mdc-typography--headline3;
+}
+
+p {
+    @extend .mdc-typography--body1;
+}
+
