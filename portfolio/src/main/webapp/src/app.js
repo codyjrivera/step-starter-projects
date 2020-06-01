@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC
+// Copyright 2020 Cody Rivera
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,16 +13,8 @@
 // limitations under the License.
 
 /**
- * Adds a random greeting to the page.
+ * @fileoverview Javascript for home page. Currently this file
+ * does nothing, as the home page is static.
+ * @package
  */
-function addRandomGreeting() {
-  const greetings =
-      ['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!'];
 
-  // Pick a random greeting.
-  const greeting = greetings[Math.floor(Math.random() * greetings.length)];
-
-  // Add it to the page.
-  const greetingContainer = document.getElementById('greeting-container');
-  greetingContainer.innerText = greeting;
-}
