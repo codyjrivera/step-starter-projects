@@ -6,12 +6,23 @@
 // Import the styles for each MDC Web component
 @import "@material/typography/mdc-typography";
 @import "@material/button/mdc-button";
+@import "@material/fab/mdc-fab";
 @import "@material/top-app-bar/mdc-top-app-bar";
 @import "@material/layout-grid/mdc-layout-grid";
 
 // Top bar text theme
 .mdc-top-app-bar--active {
   font-weight: bold;
+}
+
+// Floating link button styles
+.port-float-button-links {
+  // Buttons are placed in bottom right corner
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  // Buttons are stacked on top of each other
+  vertical-align: middle;
 }
 
 // Style homepage text

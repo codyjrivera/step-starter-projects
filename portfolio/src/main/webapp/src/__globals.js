@@ -34,4 +34,7 @@ const Globals = {
     "act" : "Activities",
   },
   pageTitle : "Cody Rivera",
+  // URLs for floating button links
+  githubURL : "https://github.com/codyjrivera",
+  linkedinURL : "https://www.linkedin.com/in/codyjrivera/",
 }

@@ -22,9 +22,11 @@
  * @module
  */
 
+import github from "simple-icons/icons/github";
+import linkedin from "simple-icons/icons/linkedin";
 import { Globals } from "./__globals";
 
-export { createTopBar };
+export { createTopBar, createFloatingLinks };
 
 /**
  * Creates a top bar tailored for the specific page.
@@ -64,7 +66,7 @@ function createTopBarTitle(title) {
   topBarTitle.classList.add("mdc-top-app-bar__section", 
                             "mdc-top-app-bar__section--align-start");
 
-  // TODO -- This should be in its own function
+  // Creates actual title element -- with link to homepage
   let titleElement = createButtonLink(title, "index.html");
   titleElement.classList.add("mdc-top-app-bar__action-item");
 
@@ -121,4 +123,37 @@ function createButtonLink(buttonLabel, buttonLink) {
   buttonElement.appendChild(rippleElement);
   buttonElement.appendChild(textElement);
   return buttonElement;
+}
+
+/**
+ * Constructs floating GitHub and LinkedIn Links.
+ * Returns these elements as a DOM element --
+ * the calling page will initialize these elements.
+ *
+ * @return {Element}
+ */
+function createFloatingLinks() {
+  let newElement = document.createElement("div");
+  newElement.id = "links";
+  newElement.classList.add("port-float-button-links");
+
+  // Add each link
+  // Github Link
+  let githubLink = document.createElement("a");
+  githubLink.classList.add("mdc-fab");
+  githubLink.setAttribute("href", Globals.githubURL);
+  githubLink.setAttribute("aria-label", "GitHub");
+  githubLink.innerHTML = github.svg;
+
+  // LinkedIn Link
+  let linkedinLink = document.createElement("a");
+  linkedinLink.classList.add("mdc-fab");
+  linkedinLink.setAttribute("href", Globals.linkedinURL);
+  linkedinLink.setAttribute("aria-label", "LinkedIn");
+  linkedinLink.innerHTML = linkedin.svg;
+
+  newElement.appendChild(githubLink);
+  newElement.appendChild(document.createElement("br"));
+  newElement.appendChild(linkedinLink);
+  return newElement;
 }
