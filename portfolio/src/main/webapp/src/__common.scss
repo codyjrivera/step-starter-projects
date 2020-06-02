@@ -1,0 +1,51 @@
+// Material Theming
+
+// CSS Reset
+@import '@hi-ui/core-css/base.scss';
+
+// Import the styles for each MDC Web component
+@import "@material/typography/mdc-typography";
+@import "@material/button/mdc-button";
+@import "@material/top-app-bar/mdc-top-app-bar";
+@import "@material/layout-grid/mdc-layout-grid";
+
+// Top bar text theme
+.mdc-top-app-bar--active {
+  text-decoration: underline;
+}
+
+// Style homepage text
+#contents {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    max-width: 1200px;
+    padding-top: 96px;
+    @extend .mdc-typography;
+}
+
+// Give default tags Material styles
+h1 {
+    text-align: center;
+    @extend .mdc-typography--headline1;
+}
+
+h2 {
+    @extend .mdc-typography--headline2;
+}
+
+h3 {
+    @extend .mdc-typography--headline3;
+}
+
+h4 {
+    @extend .mdc-typography--headline4;
+}
+
+h5 {
+    @extend .mdc-typography--headline5;
+}
+
+p {
+    @extend .mdc-typography--body1;
+}

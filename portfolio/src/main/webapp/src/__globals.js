@@ -1,4 +1,5 @@
-// Copyright 2020 Cody Rivera
+// Copyright 2019-2020 Google LLC
+// Author -- Cody Rivera
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,20 +14,23 @@
 // limitations under the License.
 
 /**
- * @fileoverview Javascript for home page. Loads the top bar.
- * 
- * @package
+ * @fileoverview This module provides global variables used throughout the
+ * website.
+ *
+ * @module
  */
 
-import { MDCTopAppBar } from '@material/top-app-bar';
-import { createTopBar } from "./__common";
+export {Globals};
 
-const pageName = "index";
-
-/** Inserts the top bar */
-const topBarElement = createTopBar(pageName);
-document.getElementById("header").replaceWith(topBarElement);
-const topBar = new MDCTopAppBar(document.getElementsByTagName("header")[0]);
-
-/** Adds ripple effect to buttons */
-const buttonRipple = new MDCRipple(document.querySelector('.mdc-button'));
+/** Page filenames and mapped long names */
+const Globals = {
+  pageNames : ['bio', 'exp', 'proj', 'act'],
+  pageNameMap : {
+    "index" : "",
+    "bio" : "Biography",
+    "exp" : "Experience",
+    "proj" : "Projects",
+    "act" : "Activities",
+  },
+  pageTitle : "Cody Rivera",
+}
