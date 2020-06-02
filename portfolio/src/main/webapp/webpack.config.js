@@ -1,11 +1,18 @@
 const autoprefixer = require('autoprefixer');
+const glob = require('glob');
 const path = require('path');
 
 module.exports = [{
-  entry: ['./src/app.scss', './src/app.js'],
+  entry: {
+    app : [path.resolve(__dirname, "src/app.js"), path.resolve(__dirname, "src/app.scss")],
+    bio : [path.resolve(__dirname, "src/bio.js"), path.resolve(__dirname, "src/bio.scss")],
+    exp : [path.resolve(__dirname, "src/exp.js"), path.resolve(__dirname, "src/exp.scss")],
+    proj : [path.resolve(__dirname, "src/proj.js"), path.resolve(__dirname, "src/proj.scss")],
+    act : [path.resolve(__dirname, "src/act.js"), path.resolve(__dirname, "src/act.scss")],
+  },
   output: {
     path: path.resolve(__dirname, "src/dist"),
-    filename: 'bundle.js',
+    filename: '[name].js',
   },
   module: {
     rules: [
@@ -15,7 +22,7 @@ module.exports = [{
           {
             loader: 'file-loader',
             options: {
-              name: 'bundle.css',
+              name: '[name].css',
             },
           },
           { loader: 'extract-loader' },

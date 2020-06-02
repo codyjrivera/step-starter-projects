@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -314,38 +314,38 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) *
 
 /***/ }),
 
-/***/ "./src/app.js":
+/***/ "./src/bio.js":
 /*!********************!*\
-  !*** ./src/app.js ***!
+  !*** ./src/bio.js ***!
   \********************/
 /*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _material_top_app_bar__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @material/top-app-bar */ \"./node_modules/@material/top-app-bar/index.js\");\n/* harmony import */ var _material_ripple__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @material/ripple */ \"./node_modules/@material/ripple/index.js\");\n/* harmony import */ var _common__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./__common */ \"./src/__common.js\");\n// Copyright 2019 Google LLC\n//\n// Licensed under the Apache License, Version 2.0 (the \"License\");\n// you may not use this file except in compliance with the License.\n// You may obtain a copy of the License at\n//\n//     https://www.apache.org/licenses/LICENSE-2.0\n//\n// Unless required by applicable law or agreed to in writing, software\n// distributed under the License is distributed on an \"AS IS\" BASIS,\n// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n// See the License for the specific language governing permissions and\n// limitations under the License.\n// File Modified by Cody Rivera June 2020\n\n/**\n * @fileoverview Javascript for home page. Loads the top bar.\n * \n * @package\n */\n\n\n\nvar pageName = \"index\";\n/** Inserts the top bar */\n\nvar topBarElement = Object(_common__WEBPACK_IMPORTED_MODULE_2__[\"createTopBar\"])(pageName);\ndocument.getElementById(\"header\").replaceWith(topBarElement);\nvar topBar = new _material_top_app_bar__WEBPACK_IMPORTED_MODULE_0__[\"MDCTopAppBar\"](document.getElementsByTagName(\"header\")[0]);\n/** Adds ripple effect to buttons */\n\nvar buttonRipple = new _material_ripple__WEBPACK_IMPORTED_MODULE_1__[\"MDCRipple\"](document.querySelector('.mdc-button'));\n\n//# sourceURL=webpack:///./src/app.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _material_top_app_bar__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @material/top-app-bar */ \"./node_modules/@material/top-app-bar/index.js\");\n/* harmony import */ var _material_ripple__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @material/ripple */ \"./node_modules/@material/ripple/index.js\");\n/* harmony import */ var _common__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./__common */ \"./src/__common.js\");\n// Copyright 2019 Google LLC\n//\n// Licensed under the Apache License, Version 2.0 (the \"License\");\n// you may not use this file except in compliance with the License.\n// You may obtain a copy of the License at\n//\n//     https://www.apache.org/licenses/LICENSE-2.0\n//\n// Unless required by applicable law or agreed to in writing, software\n// distributed under the License is distributed on an \"AS IS\" BASIS,\n// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n// See the License for the specific language governing permissions and\n// limitations under the License.\n// File Modified by Cody Rivera June 2020\n\n/**\n * @fileoverview Javascript for bio page. Loads the top bar.\n * \n * @package\n */\n\n\n\nvar pageName = \"bio\";\n/** Inserts the top bar */\n\nvar topBarElement = Object(_common__WEBPACK_IMPORTED_MODULE_2__[\"createTopBar\"])(pageName);\ndocument.getElementById(\"header\").replaceWith(topBarElement);\nvar topBar = new _material_top_app_bar__WEBPACK_IMPORTED_MODULE_0__[\"MDCTopAppBar\"](document.getElementsByTagName(\"header\")[0]);\n/** Adds ripple effect to buttons */\n\nvar buttonRipple = new _material_ripple__WEBPACK_IMPORTED_MODULE_1__[\"MDCRipple\"](document.querySelector('.mdc-button'));\n\n//# sourceURL=webpack:///./src/bio.js?");
 
 /***/ }),
 
-/***/ "./src/app.scss":
+/***/ "./src/bio.scss":
 /*!**********************!*\
-  !*** ./src/app.scss ***!
+  !*** ./src/bio.scss ***!
   \**********************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony default export */ __webpack_exports__[\"default\"] = (__webpack_require__.p + \"app.css\");\n\n//# sourceURL=webpack:///./src/app.scss?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony default export */ __webpack_exports__[\"default\"] = (__webpack_require__.p + \"bio.css\");\n\n//# sourceURL=webpack:///./src/bio.scss?");
 
 /***/ }),
 
-/***/ 0:
+/***/ 1:
 /*!*****************************************!*\
-  !*** multi ./src/app.js ./src/app.scss ***!
+  !*** multi ./src/bio.js ./src/bio.scss ***!
   \*****************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("__webpack_require__(/*! /home/codyjrivera/step/portfolio/src/main/webapp/src/app.js */\"./src/app.js\");\nmodule.exports = __webpack_require__(/*! /home/codyjrivera/step/portfolio/src/main/webapp/src/app.scss */\"./src/app.scss\");\n\n\n//# sourceURL=webpack:///multi_./src/app.js_./src/app.scss?");
+eval("__webpack_require__(/*! /home/codyjrivera/step/portfolio/src/main/webapp/src/bio.js */\"./src/bio.js\");\nmodule.exports = __webpack_require__(/*! /home/codyjrivera/step/portfolio/src/main/webapp/src/bio.scss */\"./src/bio.scss\");\n\n\n//# sourceURL=webpack:///multi_./src/bio.js_./src/bio.scss?");
 
 /***/ })
 

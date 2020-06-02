@@ -1,5 +1,4 @@
-// Copyright 2019-2020 Google LLC
-// Author -- Cody Rivera
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,6 +11,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
+// File Modified by Cody Rivera June 2020
 
 /**
  * @fileoverview This module provides functions and data used throughout the 
@@ -64,16 +65,8 @@ function createTopBarTitle(title) {
                             "mdc-top-app-bar__section--align-start");
 
   // TODO -- This should be in its own function
-  let titleElement = document.createElement("a");
-  titleElement.classList.add("mdc-button", "mdc-top-app-bar__action-item");
-  titleElement.setAttribute("href", "index.html");
-  let rippleElement = document.createElement("div");
-  rippleElement.classList.add("mdc-button__ripple");
-  let textElement = document.createElement("span");
-  textElement.classList.add("mdc-button__label");
-  textElement.innerHTML = title;
-  titleElement.appendChild(rippleElement);
-  titleElement.appendChild(textElement);
+  let titleElement = createButtonLink(title, "index.html");
+  titleElement.classList.add("mdc-top-app-bar__action-item");
 
   topBarTitle.appendChild(titleElement);
   return topBarTitle;
@@ -93,24 +86,39 @@ function createTopBarContents(currentPage) {
   topBarTitle.classList.add("mdc-top-app-bar__section", 
                             "mdc-top-app-bar__section--align-end");
 
-  // Adds top bar elements
+  // Adds top bar elements for each page in the website
   Globals.pageNames.forEach(name => {
-    let newElement = document.createElement("a");
-    newElement.classList.add("mdc-button", "mdc-top-app-bar__action-item");
+    let newElement = createButtonLink(Globals.pageNameMap[name],
+                                      name + ".html");
+    newElement.classList.add("mdc-top-app-bar__action-item");
     // Extra styling to current page's icon
     if (name === currentPage) {
       newElement.classList.add("mdc-top-app-bar--active");
     }
-    newElement.setAttribute("href", name + ".html");
-    let rippleElement = document.createElement("div");
-    rippleElement.classList.add("mdc-button__ripple");
-    let textElement = document.createElement("span");
-    textElement.classList.add("mdc-button__label");
-    textElement.innerHTML = Globals.pageNameMap[name];
-    newElement.appendChild(rippleElement);
-    newElement.appendChild(textElement);
     topBarTitle.appendChild(newElement);
   });
 
   return topBarTitle;
+}
+
+/**
+ * Constructs a Material button element with a given
+ * label that is also a link to another page.
+ *
+ * @param {string} buttonLabel
+ * @param {string} buttonLink
+ * @return {Element}
+ */
+function createButtonLink(buttonLabel, buttonLink) {
+  let buttonElement = document.createElement("a");
+  buttonElement.classList.add("mdc-button");
+  buttonElement.setAttribute("href", buttonLink);
+  let rippleElement = document.createElement("div");
+  rippleElement.classList.add("mdc-button__ripple");
+  let textElement = document.createElement("span");
+  textElement.classList.add("mdc-button__label");
+  textElement.innerHTML = buttonLabel;
+  buttonElement.appendChild(rippleElement);
+  buttonElement.appendChild(textElement);
+  return buttonElement;
 }

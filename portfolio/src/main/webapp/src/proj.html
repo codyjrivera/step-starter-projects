@@ -1,31 +1,57 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Cody Rivera</title>
+    <title>Cody Rivera: Projects</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="dist/app.css">
+    <link rel="stylesheet" href="dist/proj.css">
   </head>
   <body>
     <div id="header"></div>
     <div id="contents">
-      <h1>Cody Rivera</h1>
+      <h3>Projects</h3>
+      <h4>cuSZ</h4>
       <p>
-        Hi! I'm Cody Rivera, a junior Computer Science and Mathematics major
-        currently attending the <a href="https://www.ua.edu/">University of
-        Alabama</a>. My main interests within Computer Science include
-        high-performance computing, parallel and distributed systems,
-        algorithms, and theoretical computer science. Currently (Summer 2020),
-        I am working as a STEP intern at Google.
+        SZ is a lossy compression algorithm that is state-of-the-art with
+        respect to both its compression ratios and accuracy. However, the
+        algorithm as published is difficult to parallelize. cuSZ aims to
+        implement this algorithm in parallel on the Nvidia CUDA GPU
+        platform. The algorithm is comprised of an optimized parallel
+        quantization phase and a parallel huffman coding phase, which is
+        the focus of my work.
+        This work was done under the supervision of Dr. Dingwen Tao, assistant
+        professor of Computer Science at the University of Alabama. The
+        research code will be released soon.
       </p>
-      <h2>More About Me</h2>
-      <ul>
-        <li><a href="bio.html">Biography</a></li>
-        <li><a href="exp.html">Experience</a></li>
-        <li><a href="proj.html">Projects</a></li>
-        <li><a href="act.html">Activities</a></li>
-      </ul>
+      <h4>ISM2</h4>
+      <p>
+        ISM2 is a parallel GPU algorithm that multiplies two irregularly-shaped
+        matrices up to 3.3x faster than the state-of-the-art Nvidia CUBLAS
+        linear algebra library. To be more specific, ISM2 is optimized for the
+        case where one of the matrices has many rows and very few columns,
+        e.g., 10240 x 16. My work specifically focused on adapting this
+        algorithm to the Nvidia V100 GPU and generalizing a previous
+        iteration, TSM2. This work was done under the supervision of 
+        Dr. Dingwen Tao, assistant professor of Computer Science at the
+        University of Alabama. The research code is published on Github,
+        and we are submitting our manuscript to journals.
+      </p>
+      <a class="port-github-link" 
+      href="https://github.com/codyjrivera/tsm2-imp.git">
+      Project Link</a>
+      <a class="port-arxiv-link" href="https://arxiv.org/abs/2002.03258">
+      Preprint Link</a>
+      <h4>Crimson-Scheme</h4>
+      <p>
+        Crimson-Scheme is a simple Scheme interpreter I wrote to explore
+        programming language implementation. I implement the interpreter
+        in object-oriented style with C++. Here, I implement a lexer,
+        recursive-descent parser, and a simple interpreter/evaluator.
+      </p>
+      <a class="port-github-link" 
+      href="https://github.com/codyjrivera/crimson-scheme.git">
+      Project Link</a>
     </div>
-    <script src="dist/app.js" async></script>
+    <script src="dist/proj.js" async></script>
   </body>
 </html>

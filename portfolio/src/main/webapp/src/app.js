@@ -1,4 +1,4 @@
-// Copyright 2020 Cody Rivera
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,13 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// File Modified by Cody Rivera June 2020
+
 /**
- * @fileoverview Javascript for home page. Loads the top bar.
+ * @fileoverview Javascript for home page. Loads the top bar
+ * and Javascript components
  * 
  * @package
  */
 
 import { MDCTopAppBar } from '@material/top-app-bar';
+import { MDCRipple } from '@material/ripple';
 import { createTopBar } from "./__common";
 
 const pageName = "index";
