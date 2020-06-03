@@ -144,6 +144,8 @@ function createFloatingLinks() {
   githubLink.setAttribute("href", Globals.githubURL);
   githubLink.setAttribute("aria-label", "GitHub");
   githubLink.innerHTML = github.svg;
+  // Center icon in button
+  githubLink.firstElementChild.setAttribute("viewBox", "-12 -12 48 48");
 
   // LinkedIn Link
   const linkedinLink = document.createElement("a");
@@ -151,6 +153,8 @@ function createFloatingLinks() {
   linkedinLink.setAttribute("href", Globals.linkedinURL);
   linkedinLink.setAttribute("aria-label", "LinkedIn");
   linkedinLink.innerHTML = linkedin.svg;
+  // Center icon in button
+  linkedinLink.firstElementChild.setAttribute("viewBox", "-12 -12 48 48");
 
   newElement.appendChild(githubLink);
   newElement.appendChild(document.createElement("br"));

@@ -18,8 +18,8 @@
 // Floating link button styles
 .port-float-button-links {
   // Buttons are placed in bottom right corner
-  position: fixed;
   bottom: 1rem;
+  position: fixed;
   right: 1rem;
   // Buttons are stacked on top of each other
   vertical-align: middle;
@@ -29,9 +29,9 @@
 #contents {
   margin-left: auto;
   margin-right: auto;
-  width: 100%;
   max-width: 1200px;
   padding-top: 96px;
+  width: 100%;
   @extend .mdc-typography;
 }
 
