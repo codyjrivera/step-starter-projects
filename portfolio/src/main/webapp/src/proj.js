@@ -23,7 +23,7 @@
 
 import { MDCTopAppBar } from '@material/top-app-bar';
 import { MDCRipple } from '@material/ripple';
-import { createTopBar } from "./__common";
+import { createTopBar, createFloatingLinks } from "./__common";
 
 const pageName = "proj";
 
@@ -32,5 +32,10 @@ const topBarElement = createTopBar(pageName);
 document.getElementById("header").replaceWith(topBarElement);
 const topBar = new MDCTopAppBar(document.getElementsByTagName("header")[0]);
 
+/** Inserts the floating link buttons */
+const floatingElement = createFloatingLinks();
+document.getElementById("links").replaceWith(floatingElement);
+
 /** Adds ripple effect to buttons */
-const buttonRipple = new MDCRipple(document.querySelector('.mdc-button'));
+const buttonRipple = new MDCRipple(document.querySelector(".mdc-button"));
+const floatingRipple = new MDCRipple(document.querySelector(".mdc-fab"));

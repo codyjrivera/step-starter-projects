@@ -39,15 +39,15 @@ export { createTopBar, createFloatingLinks };
  * @return {Element}
  */
 function createTopBar(currentPage) {
-  let newTopBar = document.createElement("header");
+  const newTopBar = document.createElement("header");
   newTopBar.classList.add("mdc-top-app-bar", "mdc-top-app-bar--fixed");
 
-  let newTopBarDiv = document.createElement("div");
+  const newTopBarDiv = document.createElement("div");
   newTopBarDiv.classList.add("mdc-top-app-bar__row");
 
   // Generate top bar title and contents separately
-  let topBarTitle = createTopBarTitle(Globals.pageTitle);
-  let topBarContents = createTopBarContents(currentPage);
+  const topBarTitle = createTopBarTitle(Globals.pageTitle);
+  const topBarContents = createTopBarContents(currentPage);
   newTopBarDiv.appendChild(topBarTitle);
   newTopBarDiv.appendChild(topBarContents);
 
@@ -62,12 +62,12 @@ function createTopBar(currentPage) {
  * @return {Element}
  */
 function createTopBarTitle(title) {
-  let topBarTitle = document.createElement("section");
+  const topBarTitle = document.createElement("section");
   topBarTitle.classList.add("mdc-top-app-bar__section", 
                             "mdc-top-app-bar__section--align-start");
 
   // Creates actual title element -- with link to homepage
-  let titleElement = createButtonLink(title, "index.html");
+  const titleElement = createButtonLink(title, "index.html");
   titleElement.classList.add("mdc-top-app-bar__action-item");
 
   topBarTitle.appendChild(titleElement);
@@ -84,13 +84,13 @@ function createTopBarTitle(title) {
  * @return {Element}
  */
 function createTopBarContents(currentPage) {
-  let topBarTitle = document.createElement("section");
+  const topBarTitle = document.createElement("section");
   topBarTitle.classList.add("mdc-top-app-bar__section", 
                             "mdc-top-app-bar__section--align-end");
 
   // Adds top bar elements for each page in the website
   Globals.pageNames.forEach(name => {
-    let newElement = createButtonLink(Globals.pageNameMap[name],
+    const newElement = createButtonLink(Globals.pageNameMap[name],
                                       name + ".html");
     newElement.classList.add("mdc-top-app-bar__action-item");
     // Extra styling to current page's icon
@@ -112,12 +112,12 @@ function createTopBarContents(currentPage) {
  * @return {Element}
  */
 function createButtonLink(buttonLabel, buttonLink) {
-  let buttonElement = document.createElement("a");
+  const buttonElement = document.createElement("a");
   buttonElement.classList.add("mdc-button");
   buttonElement.setAttribute("href", buttonLink);
-  let rippleElement = document.createElement("div");
+  const rippleElement = document.createElement("div");
   rippleElement.classList.add("mdc-button__ripple");
-  let textElement = document.createElement("span");
+  const textElement = document.createElement("span");
   textElement.classList.add("mdc-button__label");
   textElement.innerHTML = buttonLabel;
   buttonElement.appendChild(rippleElement);
@@ -133,20 +133,20 @@ function createButtonLink(buttonLabel, buttonLink) {
  * @return {Element}
  */
 function createFloatingLinks() {
-  let newElement = document.createElement("div");
+  const newElement = document.createElement("div");
   newElement.id = "links";
   newElement.classList.add("port-float-button-links");
 
   // Add each link
   // Github Link
-  let githubLink = document.createElement("a");
+  const githubLink = document.createElement("a");
   githubLink.classList.add("mdc-fab");
   githubLink.setAttribute("href", Globals.githubURL);
   githubLink.setAttribute("aria-label", "GitHub");
   githubLink.innerHTML = github.svg;
 
   // LinkedIn Link
-  let linkedinLink = document.createElement("a");
+  const linkedinLink = document.createElement("a");
   linkedinLink.classList.add("mdc-fab");
   linkedinLink.setAttribute("href", Globals.linkedinURL);
   linkedinLink.setAttribute("aria-label", "LinkedIn");
