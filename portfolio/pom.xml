@@ -83,7 +83,7 @@
             <configuration>
               <!-- optional: if not specified, it will run webpack's default
               build (and you can remove this whole <configuration> section.) -->
-              <arguments>-p</arguments>
+              <arguments>--mode=development</arguments>
             </configuration>
           </execution>
         </executions>
@@ -113,7 +113,7 @@
         <version>2.2.0</version>
         <configuration>
           <!-- TODO: set project ID. -->
-          <deploy.projectId>YOUR_PROJECT_ID_HERE</deploy.projectId>
+          <deploy.projectId>codyjrivera-step-2020</deploy.projectId>
           <deploy.version>1</deploy.version>
         </configuration>
       </plugin>

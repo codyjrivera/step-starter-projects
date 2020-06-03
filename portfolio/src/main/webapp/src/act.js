@@ -25,7 +25,7 @@ import { MDCTopAppBar } from '@material/top-app-bar';
 import { MDCRipple } from '@material/ripple';
 import { createTopBar, createFloatingLinks } from "./__common";
 
-const pageName = "index";
+const pageName = "act";
 
 /** Inserts the top bar */
 const topBarElement = createTopBar(pageName);

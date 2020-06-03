@@ -15,7 +15,7 @@
 // File Modified by Cody Rivera June 2020
 
 /**
- * @fileoverview Javascript for home page. Loads the top bar
+ * @fileoverview Javascript for projects page. Loads the top bar
  * and Javascript components
  * 
  * @package
@@ -25,7 +25,7 @@ import { MDCTopAppBar } from '@material/top-app-bar';
 import { MDCRipple } from '@material/ripple';
 import { createTopBar, createFloatingLinks } from "./__common";
 
-const pageName = "index";
+const pageName = "proj";
 
 /** Inserts the top bar */
 const topBarElement = createTopBar(pageName);
