@@ -39,3 +39,34 @@ document.getElementById("links").replaceWith(floatingElement);
 /** Adds ripple effect to buttons */
 const buttonRipple = new MDCRipple(document.querySelector(".mdc-button"));
 const floatingRipple = new MDCRipple(document.querySelector(".mdc-fab"));
+
+/** 
+ * Gets data from server by requesting /data, and returns the
+ * text as a string promise
+ *
+ * @return {Promise<string>}
+ */
+function getServerMessage() {
+  return fetch('/data').then(response => response.text());
+}
+
+/**
+ * Updates the page's card with a new message from /data,
+ * signalling an error to the user if the request fails.
+ *
+ */
+function updateMessage() {
+  getServerMessage()
+  .then(text => {
+    document.getElementById("server-message").innerHTML = text;
+  })
+  .catch(error => {
+    document.getElementById("server-message").innerHTML =
+    "<b>Unable to fetch message from server</b>";
+    console.error(error);
+  })
+}
+
+/** Adds click handler to message button */
+document.getElementById("message-button")
+        .addEventListener("click", updateMessage);
