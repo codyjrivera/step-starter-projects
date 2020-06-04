@@ -1,2 +1,17 @@
 // Common project styles
 @import "./__common";
+
+.left-text-align {
+  display: inline;
+}
+
+.right-image-align {
+  float: right;
+  width: 25%;
+}
+
+.right-image {
+  display: block;
+  margin-left: auto;
+  width: 90%;
+}
