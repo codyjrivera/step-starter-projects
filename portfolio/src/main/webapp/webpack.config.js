@@ -9,6 +9,7 @@ module.exports = [{
     exp : [path.resolve(__dirname, "src/exp.js"), path.resolve(__dirname, "src/exp.scss")],
     proj : [path.resolve(__dirname, "src/proj.js"), path.resolve(__dirname, "src/proj.scss")],
     act : [path.resolve(__dirname, "src/act.js"), path.resolve(__dirname, "src/act.scss")],
+    com : [path.resolve(__dirname, "src/com.js"), path.resolve(__dirname, "src/com.scss")],
   },
   output: {
     path: path.resolve(__dirname, "src/dist"),

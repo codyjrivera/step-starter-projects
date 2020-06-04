@@ -1,2 +1,20 @@
 // Common project styles
 @import "./__common";
+
+// Responsive front page image
+#top-banner {
+  max-height: 250pt;
+  overflow: hidden;
+  width: 100%;
+}
+
+#top-banner-image {
+  height: auto;
+  width: 100%;
+}
+
+// As a result of the front page image,
+// we can remove padding from body
+#contents {
+  padding-top: 0px;
+}
