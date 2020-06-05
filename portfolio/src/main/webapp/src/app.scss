@@ -20,32 +20,4 @@
   padding-top: 0px;
 }
 
-// Card for messages
-.port-card {
-  padding: 16px;
-  @extend .mdc-card;
-}
 
-.port-card-title {
-  @extend h4;
-  margin-block-start: 16px;
-  margin-block-end: 16px;
-}
-
-.port-card-contents {
-  text-align: center;
-}
-
-.port-card-actions {
-  @extend .mdc-card__actions;
-}
-
-.port-card-button {
-  @extend .mdc-button;
-  @extend .mdc-card__action;
-  @extend .mdc-card__action--button;
-}
-
-.port-card-button-label {
-  @extend .mdc-button__label;
-}

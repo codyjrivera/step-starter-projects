@@ -39,3 +39,66 @@ document.getElementById("links").replaceWith(floatingElement);
 /** Adds ripple effect to buttons */
 const buttonRipple = new MDCRipple(document.querySelector(".mdc-button"));
 const floatingRipple = new MDCRipple(document.querySelector(".mdc-fab"));
+
+/** 
+ * Gets comments data from server by submitting a GET
+ * request to /data. Returns the comments as a JavaScript
+ * value promise.
+ *
+ * @return {Promise<any>}
+ */
+function getCommentsFromServer() {
+  return fetch('/data').then(response => response.json());
+}
+
+/**
+ * Creates a comment card with the given comment text
+ *
+ * @param {String} commentText
+ * @return {Element}
+ */
+function createCommentCard(commentText) {
+  const cardElement = document.createElement("div");
+  cardElement.classList.add("port-card");
+
+  const cardContents = document.createElement("div");
+  cardContents.classList.add("port-card-contents");
+  cardContents.innerHTML = commentText;
+
+  cardElement.appendChild(cardContents);
+  return cardElement;
+}
+
+/**
+ * Adds all of the comment messages in the passed
+ * object to the page as cards. The passed object
+ * should be of type Array<String>, otherwise,
+ * addCommentsToPage will throw an exception.
+ * 
+ * @param {any} comments
+ */
+function addCommentsToPage(comments) {
+  comments.forEach(comment => {
+    const newCard = createCommentCard(comment);
+    document.getElementById("comment-list").appendChild(newCard);
+  });
+}
+
+/**
+ * Fetches comments from the server and places them on the page
+ * as cards. Otherwise, puts an error card on the page.
+ *
+ */
+function updateComments() {
+  getCommentsFromServer()
+  .then(addCommentsToPage)
+  .catch(error => {
+    const errorCard =
+      createCommentCard("<b>Unable to fetch comments from server</b>");
+    document.getElementById("comment-list").appendChild(errorCard);
+    console.error(error);
+  })
+}
+
+/** Once the page loads, request comments */
+updateComments();

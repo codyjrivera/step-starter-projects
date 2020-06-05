@@ -32,11 +32,13 @@ public class DataServlet extends HttpServlet {
   /**
    * Constant test comments
    */
-  static final String[] TEST_COMMENTS = {"This is a normal comment",
-                                         "This is another normal comment",
-                                         "This is yet a third comment"};
+  static final String[] TEST_COMMENTS = {
+    "This is a normal comment",
+    "This is another normal comment",
+    "This is yet a third comment"
+  };
   
-  static final ArrayList<String> COMMENTS_LIST =
+  private ArrayList<String> commentsList =
     new ArrayList<String>(Arrays.asList(TEST_COMMENTS));
 
   /**
@@ -52,7 +54,7 @@ public class DataServlet extends HttpServlet {
     response.setContentType("application/json;");
     // Convert ArrayList to JSON.
     Gson gson = new Gson();
-    String commentsListJson = gson.toJson(COMMENTS_LIST);
+    String commentsListJson = gson.toJson(commentsList);
     response.getWriter().println(commentsListJson);
   }
 }
