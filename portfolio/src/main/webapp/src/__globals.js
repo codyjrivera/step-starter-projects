@@ -25,13 +25,14 @@ export {Globals};
 
 /** Page filenames and mapped long names */
 const Globals = {
-  pageNames : ['bio', 'exp', 'proj', 'act'],
+  pageNames : ['bio', 'exp', 'proj', 'act', 'com'],
   pageNameMap : {
     "index" : "",
     "bio" : "Biography",
     "exp" : "Experience",
     "proj" : "Projects",
     "act" : "Activities",
+    "com" : "Comments",
   },
   pageTitle : "Cody Rivera",
   // URLs for floating button links
