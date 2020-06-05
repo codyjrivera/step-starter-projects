@@ -24,7 +24,6 @@
 
 import github from "simple-icons/icons/github";
 import linkedin from "simple-icons/icons/linkedin";
-
 import { Globals } from "./__globals";
 
 export { createTopBar, createFloatingLinks };
