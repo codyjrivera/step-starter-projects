@@ -30,16 +30,14 @@ public class DataServlet extends HttpServlet {
   static final long serialVersionUID = 1L;
 
   /**
-   * Constant test comments
+   * Comments to be sent out upon /data GET request.
    */
-  static final String[] TEST_COMMENTS = {
-    "This is a normal comment",
-    "This is another normal comment",
-    "This is yet a third comment"
-  };
-  
   private ArrayList<String> commentsList =
-    new ArrayList<String>(Arrays.asList(TEST_COMMENTS));
+    new ArrayList<String>(Arrays.asList(
+      "This is a normal comment",
+      "This is another normal comment",
+      "This is yet a third comment"
+    ));
 
   /**
    * Processes HTTP GET requests for the /data servlet
