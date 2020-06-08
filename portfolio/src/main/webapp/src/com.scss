@@ -1,6 +1,12 @@
 // Common project styles
 @import "./__common";
 @import "@material/card/mdc-card";
+@import "@material/textfield/mdc-text-field";
+
+#comment-entry {
+  margin: auto;
+  margin-bottom: 16px;
+}
 
 #comment-list {
   margin: auto;
@@ -15,9 +21,19 @@
 }
 
 .port-card-title {
-  @extend h4;
+  @extend h6;
   margin-block-start: 16px;
   margin-block-end: 16px;
+}
+
+.port-text-field {
+  margin: auto;
+  width: 75%;
+  @extend .mdc-text-field;
+}
+
+.port-text-field-input {
+  @extend .mdc-text-field__input;
 }
 
 .port-card-contents {
@@ -25,6 +41,7 @@
 }
 
 .port-card-actions {
+  margin-left: auto;
   @extend .mdc-card__actions;
 }
 

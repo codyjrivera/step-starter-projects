@@ -57,4 +57,35 @@ public class DataServlet extends HttpServlet {
     String commentsListJson = gson.toJson(commentsList);
     response.getWriter().println(commentsListJson);
   }
+
+  /**
+   * Processes HTTP POST requests for the /data servlet
+   * The requests are responded to by appending the
+   * 'comment-text' argument of the POST request
+   * to the list of comments. The client is then redirected back to
+   * the com.html page.
+   *
+   * @param request Information about the POST Request
+   * @param response Information about the servlet's response
+   */
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String commentText = getParameter(request, "comment-text", "");
+    commentsList.add(commentText);
+    
+    response.sendRedirect("/com.html");
+  }
+
+
+  /**
+   * @return the request parameter, or the default value if the parameter
+   *         was not specified by the client
+   */
+  private String getParameter(HttpServletRequest request, String name, String defaultValue) {
+    String value = request.getParameter(name);
+    if (value == null) {
+      return defaultValue;
+    }
+    return value;
+  }
 }
