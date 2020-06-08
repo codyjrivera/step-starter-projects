@@ -110,6 +110,23 @@
         </configuration>
       </plugin>
 
+      <!-- Provides automatic Java formatting via google-java-format --> 
+      <plugin>
+        <groupId>com.coveo</groupId>
+        <artifactId>fmt-maven-plugin</artifactId>
+        <version>2.9</version>
+        <configuration>
+          <verbose>true</verbose>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
       <!-- Provides `mvn package appengine:run` for local testing
            and `mvn package appengine:deploy` for deploying. -->
       <plugin>
@@ -125,3 +142,4 @@
     </plugins>
   </build>
 </project>
+
