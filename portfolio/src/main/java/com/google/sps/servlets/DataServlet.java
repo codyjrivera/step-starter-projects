@@ -22,6 +22,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query.SortDirection;
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
@@ -30,21 +36,9 @@ public class DataServlet extends HttpServlet {
   static final long serialVersionUID = 1L;
 
   /**
-   * Constant test comments
-   */
-  static final String[] TEST_COMMENTS = {
-    "This is a normal comment",
-    "This is another normal comment",
-    "This is yet a third comment"
-  };
-  
-  private ArrayList<String> commentsList =
-    new ArrayList<String>(Arrays.asList(TEST_COMMENTS));
-
-  /**
    * Processes HTTP GET requests for the /data servlet
-   * The requests are responded to by a list of test commments
-   * sent back as a JSON array of strings.
+   * The requests are responded to by a list of commments
+   * from the Datastore sent back as a JSON array of strings.
    *
    * @param request Information about the GET Request
    * @param response Information about the servlet's response
@@ -52,7 +46,18 @@ public class DataServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json;");
-    // Convert ArrayList to JSON.
+
+    // Gets all existing comments from database
+    ArrayList<String> commentsList = new ArrayList<String>();
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+    Query query = new Query("Comment").addSort("timestamp", SortDirection.ASCENDING);
+    PreparedQuery results = datastore.prepare(query);
+    for (Entity entity : results.asIterable()) {
+      commentsList.add(entity.getProperty("text").toString());
+    }
+
+    // Convert ArrayList of comments to JSON.
     Gson gson = new Gson();
     String commentsListJson = gson.toJson(commentsList);
     response.getWriter().println(commentsListJson);
@@ -62,7 +67,7 @@ public class DataServlet extends HttpServlet {
    * Processes HTTP POST requests for the /data servlet
    * The requests are responded to by appending the
    * 'comment-text' argument of the POST request
-   * to the list of comments. The client is then redirected back to
+   * to the Datastore database. The client is then redirected back to
    * the com.html page.
    *
    * @param request Information about the POST Request
@@ -71,8 +76,17 @@ public class DataServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String commentText = getParameter(request, "comment-text", "");
-    commentsList.add(commentText);
-    
+
+    // Create entity
+    long timestamp = System.currentTimeMillis();
+    Entity commentEntity = new Entity("Comment");
+    commentEntity.setProperty("timestamp", timestamp);
+    commentEntity.setProperty("text", commentText);
+
+    // Add to database
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(commentEntity);
+
     response.sendRedirect("/com.html");
   }
 
