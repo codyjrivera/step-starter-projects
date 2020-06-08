@@ -17,28 +17,28 @@
 /**
  * @fileoverview Javascript for home page. Loads the top bar
  * and Javascript components
- * 
+ *
  * @package
  */
 
 import { MDCTopAppBar } from '@material/top-app-bar';
 import { MDCRipple } from '@material/ripple';
-import { createTopBar, createFloatingLinks } from "./__common";
+import { createTopBar, createFloatingLinks } from './__common';
 
-const pageName = "com";
+const pageName = 'com';
 
 /** Inserts the top bar */
 const topBarElement = createTopBar(pageName);
-document.getElementById("header").replaceWith(topBarElement);
-const topBar = new MDCTopAppBar(document.getElementsByTagName("header")[0]);
+document.getElementById('header').replaceWith(topBarElement);
+new MDCTopAppBar(document.getElementsByTagName('header')[0]);
 
 /** Inserts the floating link buttons */
 const floatingElement = createFloatingLinks();
-document.getElementById("links").replaceWith(floatingElement);
+document.getElementById('links').replaceWith(floatingElement);
 
 /** Adds ripple effect to buttons */
-const buttonRipple = new MDCRipple(document.querySelector(".mdc-button"));
-const floatingRipple = new MDCRipple(document.querySelector(".mdc-fab"));
+new MDCRipple(document.querySelector(".mdc-button"));
+new MDCRipple(document.querySelector(".mdc-fab"));
 
 /** 
  * Gets comments data from server by submitting a GET
