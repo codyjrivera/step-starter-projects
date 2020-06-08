@@ -4,7 +4,7 @@ install:
 	chmod +x ../.git/hooks/pre-push
 
 format: install
-	npx prettier --write --ignore-path=target --ignore-path=src/main/webapp/node_modules --ignore-path=src/main/webapp/dist src/main/webapp/**/*.{html,css,js}
+	npx prettier --write --ignore-path=target --ignore-path=src/main/webapp/node_modules --ignore-path=src/main/webapp/dist src/main/webapp/**/*.{html,scss,js}
 	mvn com.coveo:fmt-maven-plugin:format -Dverbose=true
 
 lint: install
