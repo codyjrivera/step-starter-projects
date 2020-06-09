@@ -17,30 +17,30 @@
 /**
  * @fileoverview Javascript for home page. Loads the top bar
  * and Javascript components
- * 
+ *
  * @package
  */
 
 import { MDCTopAppBar } from '@material/top-app-bar';
 import { MDCRipple } from '@material/ripple';
-import { createTopBar, createFloatingLinks } from "./__common";
+import { createTopBar, createFloatingLinks } from './__common';
 
-const pageName = "com";
+const pageName = 'com';
 
 /** Inserts the top bar */
 const topBarElement = createTopBar(pageName);
-document.getElementById("header").replaceWith(topBarElement);
-const topBar = new MDCTopAppBar(document.getElementsByTagName("header")[0]);
+document.getElementById('header').replaceWith(topBarElement);
+new MDCTopAppBar(document.getElementsByTagName('header')[0]);
 
 /** Inserts the floating link buttons */
 const floatingElement = createFloatingLinks();
-document.getElementById("links").replaceWith(floatingElement);
+document.getElementById('links').replaceWith(floatingElement);
 
 /** Adds ripple effect to buttons */
-const buttonRipple = new MDCRipple(document.querySelector(".mdc-button"));
-const floatingRipple = new MDCRipple(document.querySelector(".mdc-fab"));
+new MDCRipple(document.querySelector('.mdc-button'));
+new MDCRipple(document.querySelector('.mdc-fab'));
 
-/** 
+/**
  * Gets comments data from server by submitting a GET
  * request to /data. Returns the comments as a JavaScript
  * value promise.
@@ -48,7 +48,7 @@ const floatingRipple = new MDCRipple(document.querySelector(".mdc-fab"));
  * @return {Promise<any>}
  */
 function getCommentsFromServer() {
-  return fetch('/data').then(response => response.json());
+  return fetch('/data').then((response) => response.json());
 }
 
 /**
@@ -58,11 +58,11 @@ function getCommentsFromServer() {
  * @return {Element}
  */
 function createCommentCard(commentText) {
-  const cardElement = document.createElement("div");
-  cardElement.classList.add("port-card");
+  const cardElement = document.createElement('div');
+  cardElement.classList.add('port-card');
 
-  const cardContents = document.createElement("div");
-  cardContents.classList.add("port-card-contents");
+  const cardContents = document.createElement('div');
+  cardContents.classList.add('port-card-contents');
   cardContents.innerHTML = commentText;
 
   cardElement.appendChild(cardContents);
@@ -74,13 +74,13 @@ function createCommentCard(commentText) {
  * object to the page as cards. The passed object
  * should be of type Array<String>, otherwise,
  * addCommentsToPage will throw an exception.
- * 
+ *
  * @param {any} comments
  */
 function addCommentsToPage(comments) {
-  comments.forEach(comment => {
+  comments.forEach((comment) => {
     const newCard = createCommentCard(comment);
-    document.getElementById("comment-list").appendChild(newCard);
+    document.getElementById('comment-list').appendChild(newCard);
   });
 }
 
@@ -91,13 +91,14 @@ function addCommentsToPage(comments) {
  */
 function updateComments() {
   getCommentsFromServer()
-  .then(addCommentsToPage)
-  .catch(error => {
-    const errorCard =
-      createCommentCard("<b>Unable to fetch comments from server</b>");
-    document.getElementById("comment-list").appendChild(errorCard);
-    console.error(error);
-  })
+    .then(addCommentsToPage)
+    .catch((error) => {
+      const errorCard = createCommentCard(
+        '<b>Unable to fetch comments from server</b>',
+      );
+      document.getElementById('comment-list').appendChild(errorCard);
+      console.error(error);
+    });
 }
 
 /** Once the page loads, request comments */

@@ -15,17 +15,17 @@
 // File Modified by Cody Rivera June 2020
 
 /**
- * @fileoverview This module provides functions and data used throughout the 
- * frontend, including creation of elements common across all pages such as 
+ * @fileoverview This module provides functions and data used throughout the
+ * frontend, including creation of elements common across all pages such as
  * the top bar.
  *
  * @module
  */
 
-import github from "simple-icons/icons/github";
-import linkedin from "simple-icons/icons/linkedin";
+import github from 'simple-icons/icons/github';
+import linkedin from 'simple-icons/icons/linkedin';
 
-import { Globals } from "./__globals";
+import { Globals } from './__globals';
 
 export { createTopBar, createFloatingLinks };
 
@@ -40,11 +40,11 @@ export { createTopBar, createFloatingLinks };
  * @return {Element}
  */
 function createTopBar(currentPage) {
-  const newTopBar = document.createElement("header");
-  newTopBar.classList.add("mdc-top-app-bar", "mdc-top-app-bar--fixed");
+  const newTopBar = document.createElement('header');
+  newTopBar.classList.add('mdc-top-app-bar', 'mdc-top-app-bar--fixed');
 
-  const newTopBarDiv = document.createElement("div");
-  newTopBarDiv.classList.add("mdc-top-app-bar__row");
+  const newTopBarDiv = document.createElement('div');
+  newTopBarDiv.classList.add('mdc-top-app-bar__row');
 
   // Generate top bar title and contents separately
   const topBarTitle = createTopBarTitle(Globals.pageTitle);
@@ -63,13 +63,15 @@ function createTopBar(currentPage) {
  * @return {Element}
  */
 function createTopBarTitle(title) {
-  const topBarTitle = document.createElement("section");
-  topBarTitle.classList.add("mdc-top-app-bar__section", 
-                            "mdc-top-app-bar__section--align-start");
+  const topBarTitle = document.createElement('section');
+  topBarTitle.classList.add(
+    'mdc-top-app-bar__section',
+    'mdc-top-app-bar__section--align-start',
+  );
 
   // Creates actual title element -- with link to homepage
-  const titleElement = createButtonLink(title, "index.html");
-  titleElement.classList.add("mdc-top-app-bar__action-item");
+  const titleElement = createButtonLink(title, 'index.html');
+  titleElement.classList.add('mdc-top-app-bar__action-item');
 
   topBarTitle.appendChild(titleElement);
   return topBarTitle;
@@ -85,18 +87,22 @@ function createTopBarTitle(title) {
  * @return {Element}
  */
 function createTopBarContents(currentPage) {
-  const topBarTitle = document.createElement("section");
-  topBarTitle.classList.add("mdc-top-app-bar__section", 
-                            "mdc-top-app-bar__section--align-end");
+  const topBarTitle = document.createElement('section');
+  topBarTitle.classList.add(
+    'mdc-top-app-bar__section',
+    'mdc-top-app-bar__section--align-end',
+  );
 
   // Adds top bar elements for each page in the website
-  Globals.pageNames.forEach(name => {
-    const newElement = createButtonLink(Globals.pageNameMap[name],
-                                      name + ".html");
-    newElement.classList.add("mdc-top-app-bar__action-item");
+  Globals.pageNames.forEach((name) => {
+    const newElement = createButtonLink(
+      Globals.pageNameMap[name],
+      name + '.html',
+    );
+    newElement.classList.add('mdc-top-app-bar__action-item');
     // Extra styling to current page's icon
     if (name === currentPage) {
-      newElement.classList.add("mdc-top-app-bar--active");
+      newElement.classList.add('mdc-top-app-bar--active');
     }
     topBarTitle.appendChild(newElement);
   });
@@ -113,13 +119,13 @@ function createTopBarContents(currentPage) {
  * @return {Element}
  */
 function createButtonLink(buttonLabel, buttonLink) {
-  const buttonElement = document.createElement("a");
-  buttonElement.classList.add("mdc-button");
-  buttonElement.setAttribute("href", buttonLink);
-  const rippleElement = document.createElement("div");
-  rippleElement.classList.add("mdc-button__ripple");
-  const textElement = document.createElement("span");
-  textElement.classList.add("mdc-button__label");
+  const buttonElement = document.createElement('a');
+  buttonElement.classList.add('mdc-button');
+  buttonElement.setAttribute('href', buttonLink);
+  const rippleElement = document.createElement('div');
+  rippleElement.classList.add('mdc-button__ripple');
+  const textElement = document.createElement('span');
+  textElement.classList.add('mdc-button__label');
   textElement.innerHTML = buttonLabel;
   buttonElement.appendChild(rippleElement);
   buttonElement.appendChild(textElement);
@@ -134,31 +140,31 @@ function createButtonLink(buttonLabel, buttonLink) {
  * @return {Element}
  */
 function createFloatingLinks() {
-  const newElement = document.createElement("div");
-  newElement.id = "links";
-  newElement.classList.add("port-float-button-links");
+  const newElement = document.createElement('div');
+  newElement.id = 'links';
+  newElement.classList.add('port-float-button-links');
 
   // Add each link
   // Github Link
-  const githubLink = document.createElement("a");
-  githubLink.classList.add("mdc-fab");
-  githubLink.setAttribute("href", Globals.githubURL);
-  githubLink.setAttribute("aria-label", "GitHub");
+  const githubLink = document.createElement('a');
+  githubLink.classList.add('mdc-fab');
+  githubLink.setAttribute('href', Globals.githubURL);
+  githubLink.setAttribute('aria-label', 'GitHub');
   githubLink.innerHTML = github.svg;
   // Center icon in button
-  githubLink.firstElementChild.setAttribute("viewBox", "-12 -12 48 48");
+  githubLink.firstElementChild.setAttribute('viewBox', '-12 -12 48 48');
 
   // LinkedIn Link
-  const linkedinLink = document.createElement("a");
-  linkedinLink.classList.add("mdc-fab");
-  linkedinLink.setAttribute("href", Globals.linkedinURL);
-  linkedinLink.setAttribute("aria-label", "LinkedIn");
+  const linkedinLink = document.createElement('a');
+  linkedinLink.classList.add('mdc-fab');
+  linkedinLink.setAttribute('href', Globals.linkedinURL);
+  linkedinLink.setAttribute('aria-label', 'LinkedIn');
   linkedinLink.innerHTML = linkedin.svg;
   // Center icon in button
-  linkedinLink.firstElementChild.setAttribute("viewBox", "-12 -12 48 48");
+  linkedinLink.firstElementChild.setAttribute('viewBox', '-12 -12 48 48');
 
   newElement.appendChild(githubLink);
-  newElement.appendChild(document.createElement("br"));
+  newElement.appendChild(document.createElement('br'));
   newElement.appendChild(linkedinLink);
   return newElement;
 }
