@@ -14,6 +14,12 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,13 +29,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.gson.Gson;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query.SortDirection;
 
 /** Servlet that displays all comments via GET and adds a comment via POST */
 @WebServlet("/data")
@@ -46,12 +45,10 @@ public class DataServlet extends HttpServlet {
               "This is yet a third comment"));
 
   /**
-   * Processes HTTP GET requests for the /data servlet
-   * The requests are responded to by a list of commments
-   * from the Datastore sent back as a JSON array of strings.
-   * The argument 'max-comments' can optionally restrict the
-   * number of comments returned to at most that number, provided
-   * the argument is a valid integer.
+   * Processes HTTP GET requests for the /data servlet The requests are responded to by a list of
+   * commments from the Datastore sent back as a JSON array of strings. The argument 'max-comments'
+   * can optionally restrict the number of comments returned to at most that number, provided the
+   * argument is a valid integer.
    *
    * @param request Information about the GET Request
    * @param response Information about the servlet's response
@@ -60,7 +57,7 @@ public class DataServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Extract maximum number of comments returned from arguments
     String maxCommentsString = getParameter(request, "max-comments", "");
-    
+
     boolean hasMaxComments = false;
     int maxComments = 0;
     try {
@@ -68,7 +65,7 @@ public class DataServlet extends HttpServlet {
       hasMaxComments = true;
     } catch (NumberFormatException e) {
       // Otherwise, hasMaxComments will remain false
-      // and all comments will be returned.  
+      // and all comments will be returned.
     }
 
     // Gets all existing comments from database
@@ -83,8 +80,7 @@ public class DataServlet extends HttpServlet {
 
     // If max-comments was provided, extract a sublist.
     if (hasMaxComments) {
-      commentsList = 
-        commentsList.subList(0, Integer.min(maxComments, commentsList.size()));
+      commentsList = commentsList.subList(0, Integer.min(maxComments, commentsList.size()));
     }
 
     // Convert List of comments to JSON.
@@ -95,11 +91,9 @@ public class DataServlet extends HttpServlet {
   }
 
   /**
-   * Processes HTTP POST requests for the /data servlet
-   * The requests are responded to by appending the
-   * 'comment-text' argument of the POST request
-   * to the Datastore database. The client is then redirected back to
-   * the com.html page.
+   * Processes HTTP POST requests for the /data servlet The requests are responded to by appending
+   * the 'comment-text' argument of the POST request to the Datastore database. The client is then
+   * redirected back to the com.html page.
    *
    * @param request Information about the POST Request
    * @param response Information about the servlet's response
@@ -122,8 +116,8 @@ public class DataServlet extends HttpServlet {
   }
 
   /**
-   * @return the request parameter, or the default value if the parameter
-   *         was not specified by the client
+   * @return the request parameter, or the default value if the parameter was not specified by the
+   *     client
    */
   private String getParameter(HttpServletRequest request, String name, String defaultValue) {
     String value = request.getParameter(name);

@@ -50,13 +50,13 @@ new MDCRipple(document.querySelector('.mdc-fab'));
  * @return {Promise<any>}
  */
 function getCommentsFromServer(maxComments) {
-  return fetch('/data' + '?max-comments=' + maxComments)
-  .then(response => {
+  return fetch('/data' + '?max-comments=' + maxComments).then((response) => {
     if (response.ok) {
       return response.json();
     } else {
       return Promise.reject(
-        new Error(response.status + ": " + response.statusText));
+        new Error(response.status + ': ' + response.statusText),
+      );
     }
   });
 }
@@ -69,12 +69,13 @@ function getCommentsFromServer(maxComments) {
  * @return {Promise<any>}
  */
 function deleteAllCommentsFromServer() {
-  return fetch('/delete-data').then(response => {
+  return fetch('/delete-data').then((response) => {
     if (response.ok) {
       return response.json();
     } else {
       return Promise.reject(
-        new Error(response.status + ": " + response.statusText));
+        new Error(response.status + ': ' + response.statusText),
+      );
     }
   });
 }
@@ -107,8 +108,8 @@ function createCommentCard(commentText) {
  */
 function addCommentsToPage(comments) {
   // Clear existing HTML
-  document.getElementById("comment-list").innerHTML = "";
-  comments.forEach(comment => {
+  document.getElementById('comment-list').innerHTML = '';
+  comments.forEach((comment) => {
     const newCard = createCommentCard(comment);
     document.getElementById('comment-list').appendChild(newCard);
   });
@@ -121,7 +122,7 @@ function addCommentsToPage(comments) {
  */
 function updateComments() {
   // Extract max comments per page from drop-down
-  const elt = document.getElementById("comment-number");
+  const elt = document.getElementById('comment-number');
   const maxComments = elt.options[elt.selectedIndex].value;
 
   getCommentsFromServer(maxComments)
@@ -130,7 +131,7 @@ function updateComments() {
       const errorCard = createCommentCard(
         '<b>Unable to fetch comments from server</b>',
       );
-      document.getElementById("comment-list").innerHTML = "";
+      document.getElementById('comment-list').innerHTML = '';
       document.getElementById('comment-list').appendChild(errorCard);
       console.error(error);
     });
@@ -142,22 +143,25 @@ function updateComments() {
  */
 function deleteAllComments() {
   deleteAllCommentsFromServer()
-  .then(_ => updateComments())
-  .catch(error => {
-    const errorCard =
-      createCommentCard("<b>Unable to delete comments from server</b>");
-    document.getElementById("comment-list").innerHTML = "";
-    document.getElementById("comment-list").appendChild(errorCard);
-    console.error(error);
-  });
+    .then((_) => updateComments())
+    .catch((error) => {
+      const errorCard = createCommentCard(
+        '<b>Unable to delete comments from server</b>',
+      );
+      document.getElementById('comment-list').innerHTML = '';
+      document.getElementById('comment-list').appendChild(errorCard);
+      console.error(error);
+    });
 }
 
 /** Add handlers to button and select elements */
-document.getElementById("comment-delete")
-        .addEventListener("click", deleteAllComments);
+document
+  .getElementById('comment-delete')
+  .addEventListener('click', deleteAllComments);
 /** Change in number of comments displayed per page */
-document.getElementById("comment-number")
-        .addEventListener("change", updateComments);
+document
+  .getElementById('comment-number')
+  .addEventListener('change', updateComments);
 
 /** Once the page loads, request comments */
 updateComments();
