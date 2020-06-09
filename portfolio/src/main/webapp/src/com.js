@@ -70,6 +70,37 @@ function getCommentsFromServer(maxComments) {
 }
 
 /**
+ * Adds comment data to the server by submitting a POST
+ * request to /data. commentText contains the string that
+ * will be stored in the comment. Returns a promise with
+ * an undefined value on success.
+ *
+ * @param {String} commentText
+ * @return {Promise<any>}
+ */
+function submitCommentToServer(commentText) {
+  // Package POST arguments
+  const args = new URLSearchParams();
+  args.append('comment-text', commentText);
+  // Submit POST request
+  return fetch('/data', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: args,
+  }).then((response) => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      return Promise.reject(
+        new Error(response.status + ': ' + response.statusText),
+      );
+    }
+  });
+}
+
+/**
  * Deletes all comments data from server by submitting a
  * GET request to /delete-data. Returns a promise with
  * an undefined value on success.
@@ -116,7 +147,6 @@ function createCommentCard(commentText) {
  */
 function addCommentsToPage(comments) {
   // Clear existing HTML
-  console.log(comments);
   document.getElementById('comment-list').innerHTML = '';
   comments.forEach((comment) => {
     const newCard = createCommentCard(comment);
@@ -147,6 +177,25 @@ function updateComments() {
 }
 
 /**
+ * Adds a comment to the server, taking text from the input
+ * form.
+ *
+ */
+function addComment() {
+  const commentText = document.getElementById('comment-text').value;
+  submitCommentToServer(commentText)
+    .then((_) => updateComments())
+    .catch((error) => {
+      const errorCard = createCommentCard(
+        '<b>Unable to add comment to server</b>',
+      );
+      document.getElementById('comment-list').innerHTML = '';
+      document.getElementById('comment-list').appendChild(errorCard);
+      console.error(error);
+    });
+}
+
+/**
  * Deletes all comments from the server and reloads the page
  *
  */
@@ -167,6 +216,16 @@ function deleteAllComments() {
 document
   .getElementById('comment-delete')
   .addEventListener('click', deleteAllComments);
+
+document.getElementById('comment-submit').addEventListener('click', addComment);
+
+/** Add 'enter' keystroke listener to comment input field */
+document.getElementById('comment-text').addEventListener('keyup', (event) => {
+  if (event.key === 'Enter') {
+    addComment();
+  }
+});
+
 /** Change in number of comments displayed per page */
 document
   .getElementById('comment-number')

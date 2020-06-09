@@ -23,7 +23,6 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import javax.servlet.annotation.WebServlet;
@@ -36,14 +35,6 @@ import javax.servlet.http.HttpServletResponse;
 public class DataServlet extends HttpServlet {
 
   static final long serialVersionUID = 1L;
-
-  /** Comments to be sent out upon /data GET request. */
-  private ArrayList<String> commentsList =
-      new ArrayList<String>(
-          Arrays.asList(
-              "This is a normal comment",
-              "This is another normal comment",
-              "This is yet a third comment"));
 
   /**
    * Processes HTTP GET requests for the /data servlet The requests are responded to by a list of
@@ -118,7 +109,8 @@ public class DataServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(commentEntity);
 
-    response.sendRedirect("/com.html");
+    response.setContentType("application/json;");
+    response.getWriter().println("{ \"status\": \"ok\" }");
   }
 
   /**
