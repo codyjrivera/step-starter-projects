@@ -36,6 +36,16 @@ public class DataServlet extends HttpServlet {
   static final long serialVersionUID = 1L;
 
   /**
+   * Comments to be sent out upon /data GET request.
+   */
+  private ArrayList<String> commentsList =
+    new ArrayList<String>(Arrays.asList(
+      "This is a normal comment",
+      "This is another normal comment",
+      "This is yet a third comment"
+    ));
+
+  /**
    * Processes HTTP GET requests for the /data servlet
    * The requests are responded to by a list of commments
    * from the Datastore sent back as a JSON array of strings.

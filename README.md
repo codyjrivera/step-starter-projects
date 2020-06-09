@@ -8,4 +8,4 @@ for Google Cloud's app engine -- build and deployment instructions are
 contained in `portfolio/`.
 
 The portfolio is deployed here: 
-[https://codyjrivera-step-2020.uc.r.appspot.com](https://codyjrivera-step-2020.uc.r.appspot.com)
+https://codyjrivera-step-2020.uc.r.appspot.com
