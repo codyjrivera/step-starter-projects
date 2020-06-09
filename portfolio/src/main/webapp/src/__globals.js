@@ -21,21 +21,21 @@
  * @module
  */
 
-export {Globals};
+export { Globals };
 
 /** Page filenames and mapped long names */
 const Globals = {
-  pageNames : ['bio', 'exp', 'proj', 'act', 'com'],
-  pageNameMap : {
-    "index" : "",
-    "bio" : "Biography",
-    "exp" : "Experience",
-    "proj" : "Projects",
-    "act" : "Activities",
-    "com" : "Comments",
+  pageNames: ['bio', 'exp', 'proj', 'act', 'com'],
+  pageNameMap: {
+    index: '',
+    bio: 'Biography',
+    exp: 'Experience',
+    proj: 'Projects',
+    act: 'Activities',
+    com: 'Comments',
   },
-  pageTitle : "Cody Rivera",
+  pageTitle: 'Cody Rivera',
   // URLs for floating button links
-  githubURL : "https://github.com/codyjrivera",
-  linkedinURL : "https://www.linkedin.com/in/codyjrivera/",
-}
+  githubURL: 'https://github.com/codyjrivera',
+  linkedinURL: 'https://www.linkedin.com/in/codyjrivera/',
+};

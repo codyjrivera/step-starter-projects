@@ -4,11 +4,11 @@
 @import '@hi-ui/core-css/base.scss';
 
 // Import the styles for each MDC Web component
-@import "@material/typography/mdc-typography";
-@import "@material/button/mdc-button";
-@import "@material/fab/mdc-fab";
-@import "@material/top-app-bar/mdc-top-app-bar";
-@import "@material/layout-grid/mdc-layout-grid";
+@import '@material/typography/mdc-typography';
+@import '@material/button/mdc-button';
+@import '@material/fab/mdc-fab';
+@import '@material/top-app-bar/mdc-top-app-bar';
+@import '@material/layout-grid/mdc-layout-grid';
 
 // Top bar text theme
 .mdc-top-app-bar--active {

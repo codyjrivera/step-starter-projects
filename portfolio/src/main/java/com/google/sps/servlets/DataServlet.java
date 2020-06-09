@@ -14,6 +14,7 @@
 
 package com.google.sps.servlets;
 
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,15 +36,13 @@ public class DataServlet extends HttpServlet {
 
   static final long serialVersionUID = 1L;
 
-  /**
-   * Comments to be sent out upon /data GET request.
-   */
+  /** Comments to be sent out upon /data GET request. */
   private ArrayList<String> commentsList =
-    new ArrayList<String>(Arrays.asList(
-      "This is a normal comment",
-      "This is another normal comment",
-      "This is yet a third comment"
-    ));
+      new ArrayList<String>(
+          Arrays.asList(
+              "This is a normal comment",
+              "This is another normal comment",
+              "This is yet a third comment"));
 
   /**
    * Processes HTTP GET requests for the /data servlet
@@ -99,7 +98,6 @@ public class DataServlet extends HttpServlet {
 
     response.sendRedirect("/com.html");
   }
-
 
   /**
    * @return the request parameter, or the default value if the parameter
