@@ -17,6 +17,23 @@
           id="comment-text"></input>
         </label>
         <div class="port-card-actions">
+          <button type="button" class="port-card-button" id="comment-delete">
+            <span class="port-card-button-label">
+              Delete Comments
+            </span>
+          </button>
+          <div class="port-select-wrapper">
+            <label class="port-select-label">
+              Comments per page:
+            </label>
+            <select class="port-select" id="comment-number">
+              <option value="5">5</option>
+              <option value="10" selected>10</option>
+              <option value="15">15</option>
+              <option value="20">20</option>
+              <option value="">All</option>
+            </select>
+          </div>
           <button type="submit" class="port-card-button" id="comment-submit">
             <span class="port-card-button-label">
               Submit Comment

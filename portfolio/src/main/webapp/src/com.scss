@@ -2,6 +2,7 @@
 @import "./__common";
 @import "@material/card/mdc-card";
 @import "@material/textfield/mdc-text-field";
+@import "@material/select/mdc-select";
 
 #comment-entry {
   margin: auto;
@@ -11,6 +12,11 @@
 #comment-list {
   margin: auto;
   width: 75%;
+}
+
+// Submit button on right of card
+#comment-submit {
+  margin-left: auto;
 }
 
 // Card for messages
@@ -36,12 +42,15 @@
   @extend .mdc-text-field__input;
 }
 
+.port-select-label {
+  padding-right: 1.5em;
+}
+
 .port-card-contents {
   text-align: left;
 }
 
 .port-card-actions {
-  margin-left: auto;
   @extend .mdc-card__actions;
 }
 

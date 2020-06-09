@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +31,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query.SortDirection;
 
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
+/** Servlet that displays all comments via GET and adds a comment via POST */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
@@ -48,27 +49,48 @@ public class DataServlet extends HttpServlet {
    * Processes HTTP GET requests for the /data servlet
    * The requests are responded to by a list of commments
    * from the Datastore sent back as a JSON array of strings.
+   * The argument 'max-comments' can optionally restrict the
+   * number of comments returned to at most that number, provided
+   * the argument is a valid integer.
    *
    * @param request Information about the GET Request
    * @param response Information about the servlet's response
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("application/json;");
+    // Extract maximum number of comments returned from arguments
+    String maxCommentsString = getParameter(request, "max-comments", "");
+    
+    boolean hasMaxComments = false;
+    int maxComments = 0;
+    try {
+      maxComments = Integer.parseInt(maxCommentsString);
+      hasMaxComments = true;
+    } catch (NumberFormatException e) {
+      // Otherwise, hasMaxComments will remain false
+      // and all comments will be returned.  
+    }
 
     // Gets all existing comments from database
-    ArrayList<String> commentsList = new ArrayList<String>();
+    List<String> commentsList = new ArrayList<String>();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-    Query query = new Query("Comment").addSort("timestamp", SortDirection.ASCENDING);
+    Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
     for (Entity entity : results.asIterable()) {
       commentsList.add(entity.getProperty("text").toString());
     }
 
-    // Convert ArrayList of comments to JSON.
+    // If max-comments was provided, extract a sublist.
+    if (hasMaxComments) {
+      commentsList = 
+        commentsList.subList(0, Integer.min(maxComments, commentsList.size()));
+    }
+
+    // Convert List of comments to JSON.
     Gson gson = new Gson();
     String commentsListJson = gson.toJson(commentsList);
+    response.setContentType("application/json;");
     response.getWriter().println(commentsListJson);
   }
 

@@ -43,12 +43,40 @@ new MDCRipple(document.querySelector('.mdc-fab'));
 /**
  * Gets comments data from server by submitting a GET
  * request to /data. Returns the comments as a JavaScript
- * value promise.
+ * value promise. maxComments constrains the number of comments
+ * returned by the server, provided it is a valid integer.
+ *
+ * @param {String} maxComments
+ * @return {Promise<any>}
+ */
+function getCommentsFromServer(maxComments) {
+  return fetch('/data' + '?max-comments=' + maxComments)
+  .then(response => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      return Promise.reject(
+        new Error(response.status + ": " + response.statusText));
+    }
+  });
+}
+
+/**
+ * Deletes all comments data from server by submitting a
+ * GET request to /delete-data. Returns a promise with
+ * an undefined value on success.
  *
  * @return {Promise<any>}
  */
-function getCommentsFromServer() {
-  return fetch('/data').then((response) => response.json());
+function deleteAllCommentsFromServer() {
+  return fetch('/delete-data').then(response => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      return Promise.reject(
+        new Error(response.status + ": " + response.statusText));
+    }
+  });
 }
 
 /**
@@ -78,7 +106,9 @@ function createCommentCard(commentText) {
  * @param {any} comments
  */
 function addCommentsToPage(comments) {
-  comments.forEach((comment) => {
+  // Clear existing HTML
+  document.getElementById("comment-list").innerHTML = "";
+  comments.forEach(comment => {
     const newCard = createCommentCard(comment);
     document.getElementById('comment-list').appendChild(newCard);
   });
@@ -90,16 +120,44 @@ function addCommentsToPage(comments) {
  *
  */
 function updateComments() {
-  getCommentsFromServer()
+  // Extract max comments per page from drop-down
+  const elt = document.getElementById("comment-number");
+  const maxComments = elt.options[elt.selectedIndex].value;
+
+  getCommentsFromServer(maxComments)
     .then(addCommentsToPage)
     .catch((error) => {
       const errorCard = createCommentCard(
         '<b>Unable to fetch comments from server</b>',
       );
+      document.getElementById("comment-list").innerHTML = "";
       document.getElementById('comment-list').appendChild(errorCard);
       console.error(error);
     });
 }
+
+/**
+ * Deletes all comments from the server and reloads the page
+ *
+ */
+function deleteAllComments() {
+  deleteAllCommentsFromServer()
+  .then(_ => updateComments())
+  .catch(error => {
+    const errorCard =
+      createCommentCard("<b>Unable to delete comments from server</b>");
+    document.getElementById("comment-list").innerHTML = "";
+    document.getElementById("comment-list").appendChild(errorCard);
+    console.error(error);
+  });
+}
+
+/** Add handlers to button and select elements */
+document.getElementById("comment-delete")
+        .addEventListener("click", deleteAllComments);
+/** Change in number of comments displayed per page */
+document.getElementById("comment-number")
+        .addEventListener("change", updateComments);
 
 /** Once the page loads, request comments */
 updateComments();
