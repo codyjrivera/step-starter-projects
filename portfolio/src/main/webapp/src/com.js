@@ -45,12 +45,20 @@ new MDCRipple(document.querySelector('.mdc-fab'));
  * request to /data. Returns the comments as a JavaScript
  * value promise. maxComments constrains the number of comments
  * returned by the server, provided it is a valid integer.
+ * Otherwise, all comments are returned.
  *
  * @param {String} maxComments
  * @return {Promise<any>}
  */
 function getCommentsFromServer(maxComments) {
-  return fetch('/data' + '?max-comments=' + maxComments).then((response) => {
+  // Client-side argument validation. This is done
+  // server-side as well.
+  let argString = '';
+  // Positive Integer
+  if (/(\+)?[0-9]+/.test(maxComments)) {
+    argString = maxComments;
+  }
+  return fetch('/data' + '?max-comments=' + argString).then((response) => {
     if (response.ok) {
       return response.json();
     } else {
@@ -108,6 +116,7 @@ function createCommentCard(commentText) {
  */
 function addCommentsToPage(comments) {
   // Clear existing HTML
+  console.log(comments);
   document.getElementById('comment-list').innerHTML = '';
   comments.forEach((comment) => {
     const newCard = createCommentCard(comment);

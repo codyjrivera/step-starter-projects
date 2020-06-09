@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -48,7 +49,7 @@ public class DataServlet extends HttpServlet {
    * Processes HTTP GET requests for the /data servlet The requests are responded to by a list of
    * commments from the Datastore sent back as a JSON array of strings. The argument 'max-comments'
    * can optionally restrict the number of comments returned to at most that number, provided the
-   * argument is a valid integer.
+   * argument is a valid positive integer.
    *
    * @param request Information about the GET Request
    * @param response Information about the servlet's response
@@ -60,12 +61,17 @@ public class DataServlet extends HttpServlet {
 
     boolean hasMaxComments = false;
     int maxComments = 0;
+
+    // If maxComments is a positive integer, read it in. Otherwise, the servlet will
+    // return every comment
     try {
-      maxComments = Integer.parseInt(maxCommentsString);
-      hasMaxComments = true;
+      if (Pattern.matches("(\\+)?[0-9]+", maxCommentsString)) {
+        maxComments = Integer.parseInt(maxCommentsString);
+        hasMaxComments = true;
+      }
     } catch (NumberFormatException e) {
-      // Otherwise, hasMaxComments will remain false
-      // and all comments will be returned.
+      // Catches regex matches which overflow the system Integer type.
+      hasMaxComments = false;
     }
 
     // Gets all existing comments from database
