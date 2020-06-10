@@ -51,14 +51,7 @@ new MDCRipple(document.querySelector('.mdc-fab'));
  * @return {Promise<any>}
  */
 function getCommentsFromServer(maxComments) {
-  // Client-side argument validation. This is done
-  // server-side as well.
-  let argString = '';
-  // Positive Integer
-  if (/(\+)?[0-9]+/.test(maxComments)) {
-    argString = maxComments;
-  }
-  return fetch('/data' + '?max-comments=' + argString).then((response) => {
+  return fetch('/data' + '?max-comments=' + maxComments).then((response) => {
     if (response.ok) {
       return response.json();
     } else {
