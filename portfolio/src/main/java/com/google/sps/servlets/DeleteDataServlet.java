@@ -32,14 +32,14 @@ public class DeleteDataServlet extends HttpServlet {
   static final long serialVersionUID = 2L;
 
   /**
-   * Processes HTTP GET requests for the /delete-data servlet This servlet deletes all records on
+   * Processes HTTP POST requests for the /delete-data servlet This servlet deletes all records on
    * the Comments table in CloudStore.
    *
-   * @param request Information about the GET Request
+   * @param request Information about the POST Request
    * @param response Information about the servlet's response
    */
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get all Comments from datastore, so we can delete by key.
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 

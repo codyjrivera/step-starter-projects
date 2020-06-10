@@ -51,14 +51,7 @@ new MDCRipple(document.querySelector('.mdc-fab'));
  * @return {Promise<any>}
  */
 function getCommentsFromServer(maxComments) {
-  // Client-side argument validation. This is done
-  // server-side as well.
-  let argString = '';
-  // Positive Integer
-  if (/(\+)?[0-9]+/.test(maxComments)) {
-    argString = maxComments;
-  }
-  return fetch('/data' + '?max-comments=' + argString).then((response) => {
+  return fetch('/data' + '?max-comments=' + maxComments).then((response) => {
     if (response.ok) {
       return response.json();
     } else {
@@ -102,13 +95,15 @@ function submitCommentToServer(commentText) {
 
 /**
  * Deletes all comments data from server by submitting a
- * GET request to /delete-data. Returns a promise with
+ * POST request to /delete-data. Returns a promise with
  * an undefined value on success.
  *
  * @return {Promise<any>}
  */
 function deleteAllCommentsFromServer() {
-  return fetch('/delete-data').then((response) => {
+  return fetch('/delete-data', {
+    method: 'POST',
+  }).then((response) => {
     if (response.ok) {
       return response.json();
     } else {
@@ -155,25 +150,34 @@ function addCommentsToPage(comments) {
 }
 
 /**
+ * Handles comment page errors by logging them and
+ * notifying the user.
+ *
+ * @param error {any}
+ * @param userMessage {String}
+ */
+function handleCommentError(error, userMessage) {
+  const errorCard = createCommentCard('<b>' + userMessage + '</b>');
+  document.getElementById('comment-list').innerHTML = '';
+  document.getElementById('comment-list').appendChild(errorCard);
+  console.error(error);
+}
+
+/**
  * Fetches comments from the server and places them on the page
  * as cards. Otherwise, puts an error card on the page.
  *
  */
-function updateComments() {
+function handleUpdateComments() {
   // Extract max comments per page from drop-down
-  const elt = document.getElementById('comment-number');
-  const maxComments = elt.options[elt.selectedIndex].value;
+  const el = document.getElementById('comment-number');
+  const maxComments = el.options[el.selectedIndex].value;
 
   getCommentsFromServer(maxComments)
     .then(addCommentsToPage)
-    .catch((error) => {
-      const errorCard = createCommentCard(
-        '<b>Unable to fetch comments from server</b>',
-      );
-      document.getElementById('comment-list').innerHTML = '';
-      document.getElementById('comment-list').appendChild(errorCard);
-      console.error(error);
-    });
+    .catch((error) =>
+      handleCommentError(error, 'Unable to fetch comments from server'),
+    );
 }
 
 /**
@@ -181,55 +185,47 @@ function updateComments() {
  * form.
  *
  */
-function addComment() {
+function handleAddComment() {
   const commentText = document.getElementById('comment-text').value;
   submitCommentToServer(commentText)
-    .then((_) => updateComments())
-    .catch((error) => {
-      const errorCard = createCommentCard(
-        '<b>Unable to add comment to server</b>',
-      );
-      document.getElementById('comment-list').innerHTML = '';
-      document.getElementById('comment-list').appendChild(errorCard);
-      console.error(error);
-    });
+    .then(handleUpdateComments)
+    .catch((error) =>
+      handleCommentError(error, 'Unable to add comment to server'),
+    );
 }
 
 /**
  * Deletes all comments from the server and reloads the page
  *
  */
-function deleteAllComments() {
+function handleDeleteAllComments() {
   deleteAllCommentsFromServer()
-    .then((_) => updateComments())
-    .catch((error) => {
-      const errorCard = createCommentCard(
-        '<b>Unable to delete comments from server</b>',
-      );
-      document.getElementById('comment-list').innerHTML = '';
-      document.getElementById('comment-list').appendChild(errorCard);
-      console.error(error);
-    });
+    .then(handleUpdateComments)
+    .catch((error) =>
+      handleCommentError(error, 'Unable to delete comments from server'),
+    );
 }
 
 /** Add handlers to button and select elements */
 document
   .getElementById('comment-delete')
-  .addEventListener('click', deleteAllComments);
+  .addEventListener('click', handleDeleteAllComments);
 
-document.getElementById('comment-submit').addEventListener('click', addComment);
+document
+  .getElementById('comment-submit')
+  .addEventListener('click', handleAddComment);
 
 /** Add 'enter' keystroke listener to comment input field */
 document.getElementById('comment-text').addEventListener('keyup', (event) => {
   if (event.key === 'Enter') {
-    addComment();
+    handleAddComment();
   }
 });
 
 /** Change in number of comments displayed per page */
 document
   .getElementById('comment-number')
-  .addEventListener('change', updateComments);
+  .addEventListener('change', handleUpdateComments);
 
 /** Once the page loads, request comments */
-updateComments();
+handleUpdateComments();
