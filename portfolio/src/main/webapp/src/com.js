@@ -123,7 +123,7 @@ function addCommentsToPage(comments) {
  * as cards. Otherwise, puts an error card on the page.
  *
  */
-function updateComments() {
+function handleUpdateComments() {
   // Extract max comments per page from drop-down
   const elt = document.getElementById('comment-number');
   const maxComments = elt.options[elt.selectedIndex].value;
@@ -144,9 +144,9 @@ function updateComments() {
  * Deletes all comments from the server and reloads the page
  *
  */
-function deleteAllComments() {
+function handleDeleteAllComments() {
   deleteAllCommentsFromServer()
-    .then((_) => updateComments())
+    .then((_) => handleUpdateComments())
     .catch((error) => {
       const errorCard = createCommentCard(
         '<b>Unable to delete comments from server</b>',
@@ -160,11 +160,11 @@ function deleteAllComments() {
 /** Add handlers to button and select elements */
 document
   .getElementById('comment-delete')
-  .addEventListener('click', deleteAllComments);
+  .addEventListener('click', handleDeleteAllComments);
 /** Change in number of comments displayed per page */
 document
   .getElementById('comment-number')
-  .addEventListener('change', updateComments);
+  .addEventListener('change', handleUpdateComments);
 
 /** Once the page loads, request comments */
-updateComments();
+handleUpdateComments();
