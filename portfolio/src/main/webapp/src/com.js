@@ -119,25 +119,37 @@ function addCommentsToPage(comments) {
 }
 
 /**
+ * Handles comment page errors by logging them and
+ * notifying the user.
+ *
+ * @param error {any}
+ * @param userMessage {String}
+ */
+function handleCommentError(error, userMessage) {
+  const errorCard = createCommentCard(
+    '<b>' + userMessage + '</b>',
+  );
+  document.getElementById('comment-list').innerHTML = '';
+  document.getElementById('comment-list').appendChild(errorCard);
+  console.error(error);
+}
+
+/**
  * Fetches comments from the server and places them on the page
  * as cards. Otherwise, puts an error card on the page.
  *
  */
 function handleUpdateComments() {
   // Extract max comments per page from drop-down
-  const elt = document.getElementById('comment-number');
-  const maxComments = elt.options[elt.selectedIndex].value;
+  const el = document.getElementById('comment-number');
+  const maxComments = el.options[el.selectedIndex].value;
 
   getCommentsFromServer(maxComments)
     .then(addCommentsToPage)
-    .catch((error) => {
-      const errorCard = createCommentCard(
-        '<b>Unable to fetch comments from server</b>',
-      );
-      document.getElementById('comment-list').innerHTML = '';
-      document.getElementById('comment-list').appendChild(errorCard);
-      console.error(error);
-    });
+    .catch((error) => handleCommentError(
+      error,
+      "Unable to fetch comments from server"
+    ));
 }
 
 /**
@@ -146,15 +158,11 @@ function handleUpdateComments() {
  */
 function handleDeleteAllComments() {
   deleteAllCommentsFromServer()
-    .then((_) => handleUpdateComments())
-    .catch((error) => {
-      const errorCard = createCommentCard(
-        '<b>Unable to delete comments from server</b>',
-      );
-      document.getElementById('comment-list').innerHTML = '';
-      document.getElementById('comment-list').appendChild(errorCard);
-      console.error(error);
-    });
+    .then(handleUpdateComments)
+    .catch((error) => handleCommentError(
+      error,
+      "Unable to delete comments from server"
+    ));
 }
 
 /** Add handlers to button and select elements */
