@@ -111,7 +111,6 @@ function createCommentCard(commentText) {
  */
 function addCommentsToPage(comments) {
   // Clear existing HTML
-  console.log(comments);
   document.getElementById('comment-list').innerHTML = '';
   comments.forEach((comment) => {
     const newCard = createCommentCard(comment);
