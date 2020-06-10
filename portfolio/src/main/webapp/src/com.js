@@ -71,13 +71,15 @@ function getCommentsFromServer(maxComments) {
 
 /**
  * Deletes all comments data from server by submitting a
- * GET request to /delete-data. Returns a promise with
+ * POST request to /delete-data. Returns a promise with
  * an undefined value on success.
  *
  * @return {Promise<any>}
  */
 function deleteAllCommentsFromServer() {
-  return fetch('/delete-data').then((response) => {
+  return fetch('/delete-data', {
+    method: 'POST',
+  }).then((response) => {
     if (response.ok) {
       return response.json();
     } else {
