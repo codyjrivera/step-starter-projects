@@ -126,9 +126,7 @@ function addCommentsToPage(comments) {
  * @param userMessage {String}
  */
 function handleCommentError(error, userMessage) {
-  const errorCard = createCommentCard(
-    '<b>' + userMessage + '</b>',
-  );
+  const errorCard = createCommentCard('<b>' + userMessage + '</b>');
   document.getElementById('comment-list').innerHTML = '';
   document.getElementById('comment-list').appendChild(errorCard);
   console.error(error);
@@ -146,10 +144,9 @@ function handleUpdateComments() {
 
   getCommentsFromServer(maxComments)
     .then(addCommentsToPage)
-    .catch((error) => handleCommentError(
-      error,
-      "Unable to fetch comments from server"
-    ));
+    .catch((error) =>
+      handleCommentError(error, 'Unable to fetch comments from server'),
+    );
 }
 
 /**
@@ -159,10 +156,9 @@ function handleUpdateComments() {
 function handleDeleteAllComments() {
   deleteAllCommentsFromServer()
     .then(handleUpdateComments)
-    .catch((error) => handleCommentError(
-      error,
-      "Unable to delete comments from server"
-    ));
+    .catch((error) =>
+      handleCommentError(error, 'Unable to delete comments from server'),
+    );
 }
 
 /** Add handlers to button and select elements */
