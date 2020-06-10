@@ -10,6 +10,40 @@
     <div id="header"></div>
     <div id="contents">
       <h1>Comments</h1>
+      <form action="/data" method="POST" class="port-card" id="comment-entry">
+        <div class="port-card-title">Please enter your comment here</div>
+        <label class="port-text-field">
+          <input
+            name="comment-text"
+            class="port-text-field-input"
+            id="comment-text"
+          />
+        </label>
+        <div class="port-card-actions">
+          <button type="button" class="port-card-button" id="comment-delete">
+            <span class="port-card-button-label">
+              Delete Comments
+            </span>
+          </button>
+          <div class="port-select-wrapper">
+            <label class="port-select-label">
+              Number of comments shown (most recent first):
+            </label>
+            <select class="port-select" id="comment-number">
+              <option value="5">5</option>
+              <option value="10" selected>10</option>
+              <option value="15">15</option>
+              <option value="20">20</option>
+              <option value="">All</option>
+            </select>
+          </div>
+          <button type="submit" class="port-card-button" id="comment-submit">
+            <span class="port-card-button-label">
+              Submit Comment
+            </span>
+          </button>
+        </div>
+      </form>
       <div id="comment-list"></div>
     </div>
     <div id="links"></div>

@@ -43,12 +43,44 @@ new MDCRipple(document.querySelector('.mdc-fab'));
 /**
  * Gets comments data from server by submitting a GET
  * request to /data. Returns the comments as a JavaScript
- * value promise.
+ * value promise. maxComments constrains the number of comments
+ * returned by the server, provided it is a valid integer.
+ * Otherwise, all comments are returned.
+ *
+ * @param {String} maxComments
+ * @return {Promise<any>}
+ */
+function getCommentsFromServer(maxComments) {
+  return fetch('/data' + '?max-comments=' + maxComments).then((response) => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      return Promise.reject(
+        new Error(response.status + ': ' + response.statusText),
+      );
+    }
+  });
+}
+
+/**
+ * Deletes all comments data from server by submitting a
+ * POST request to /delete-data. Returns a promise with
+ * an undefined value on success.
  *
  * @return {Promise<any>}
  */
-function getCommentsFromServer() {
-  return fetch('/data').then((response) => response.json());
+function deleteAllCommentsFromServer() {
+  return fetch('/delete-data', {
+    method: 'POST',
+  }).then((response) => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      return Promise.reject(
+        new Error(response.status + ': ' + response.statusText),
+      );
+    }
+  });
 }
 
 /**
@@ -78,6 +110,8 @@ function createCommentCard(commentText) {
  * @param {any} comments
  */
 function addCommentsToPage(comments) {
+  // Clear existing HTML
+  document.getElementById('comment-list').innerHTML = '';
   comments.forEach((comment) => {
     const newCard = createCommentCard(comment);
     document.getElementById('comment-list').appendChild(newCard);
@@ -85,21 +119,56 @@ function addCommentsToPage(comments) {
 }
 
 /**
+ * Handles comment page errors by logging them and
+ * notifying the user.
+ *
+ * @param error {any}
+ * @param userMessage {String}
+ */
+function handleCommentError(error, userMessage) {
+  const errorCard = createCommentCard('<b>' + userMessage + '</b>');
+  document.getElementById('comment-list').innerHTML = '';
+  document.getElementById('comment-list').appendChild(errorCard);
+  console.error(error);
+}
+
+/**
  * Fetches comments from the server and places them on the page
  * as cards. Otherwise, puts an error card on the page.
  *
  */
-function updateComments() {
-  getCommentsFromServer()
+function handleUpdateComments() {
+  // Extract max comments per page from drop-down
+  const el = document.getElementById('comment-number');
+  const maxComments = el.options[el.selectedIndex].value;
+
+  getCommentsFromServer(maxComments)
     .then(addCommentsToPage)
-    .catch((error) => {
-      const errorCard = createCommentCard(
-        '<b>Unable to fetch comments from server</b>',
-      );
-      document.getElementById('comment-list').appendChild(errorCard);
-      console.error(error);
-    });
+    .catch((error) =>
+      handleCommentError(error, 'Unable to fetch comments from server'),
+    );
 }
 
+/**
+ * Deletes all comments from the server and reloads the page
+ *
+ */
+function handleDeleteAllComments() {
+  deleteAllCommentsFromServer()
+    .then(handleUpdateComments)
+    .catch((error) =>
+      handleCommentError(error, 'Unable to delete comments from server'),
+    );
+}
+
+/** Add handlers to button and select elements */
+document
+  .getElementById('comment-delete')
+  .addEventListener('click', handleDeleteAllComments);
+/** Change in number of comments displayed per page */
+document
+  .getElementById('comment-number')
+  .addEventListener('change', handleUpdateComments);
+
 /** Once the page loads, request comments */
-updateComments();
+handleUpdateComments();

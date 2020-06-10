@@ -14,42 +14,113 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Pattern;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
+/** Servlet that displays all comments via GET and adds a comment via POST */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
   static final long serialVersionUID = 1L;
 
-  /** Comments to be sent out upon /data GET request. */
-  private ArrayList<String> commentsList =
-      new ArrayList<String>(
-          Arrays.asList(
-              "This is a normal comment",
-              "This is another normal comment",
-              "This is yet a third comment"));
-
   /**
    * Processes HTTP GET requests for the /data servlet The requests are responded to by a list of
-   * test commments sent back as a JSON array of strings.
+   * commments from the Datastore sent back as a JSON array of strings. The argument 'max-comments'
+   * can optionally restrict the number of comments returned to at most that number, provided the
+   * argument is a valid positive integer.
    *
    * @param request Information about the GET Request
    * @param response Information about the servlet's response
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("application/json;");
-    // Convert ArrayList to JSON.
+    // Extract maximum number of comments returned from arguments
+    String maxCommentsString = getParameter(request, "max-comments", "");
+
+    boolean hasMaxComments = false;
+    int maxComments = 0;
+
+    // If maxComments is a positive integer, read it in. Otherwise, the servlet will
+    // return every comment
+    try {
+      if (Pattern.matches("(\\+)?[0-9]+", maxCommentsString)) {
+        maxComments = Integer.parseInt(maxCommentsString);
+        hasMaxComments = true;
+      }
+    } catch (NumberFormatException e) {
+      // Catches regex matches which overflow the system Integer type.
+      hasMaxComments = false;
+    }
+
+    // Gets all existing comments from database
+    List<String> commentsList = new ArrayList<String>();
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+    Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
+    PreparedQuery results = datastore.prepare(query);
+    for (Entity entity : results.asIterable()) {
+      commentsList.add(entity.getProperty("text").toString());
+    }
+
+    // If max-comments was provided, extract a sublist.
+    if (hasMaxComments) {
+      commentsList = commentsList.subList(0, Integer.min(maxComments, commentsList.size()));
+    }
+
+    // Convert List of comments to JSON.
     Gson gson = new Gson();
     String commentsListJson = gson.toJson(commentsList);
+    response.setContentType("application/json;");
     response.getWriter().println(commentsListJson);
+  }
+
+  /**
+   * Processes HTTP POST requests for the /data servlet The requests are responded to by appending
+   * the 'comment-text' argument of the POST request to the Datastore database. The client is then
+   * redirected back to the com.html page.
+   *
+   * @param request Information about the POST Request
+   * @param response Information about the servlet's response
+   */
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String commentText = getParameter(request, "comment-text", "");
+
+    // Create entity
+    long timestamp = System.currentTimeMillis();
+    Entity commentEntity = new Entity("Comment");
+    commentEntity.setProperty("timestamp", timestamp);
+    commentEntity.setProperty("text", commentText);
+
+    // Add to database
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(commentEntity);
+
+    response.sendRedirect("/com.html");
+  }
+
+  /**
+   * @return the request parameter, or the default value if the parameter was not specified by the
+   *     client
+   */
+  private String getParameter(HttpServletRequest request, String name, String defaultValue) {
+    String value = request.getParameter(name);
+    if (value == null) {
+      return defaultValue;
+    }
+    return value;
   }
 }

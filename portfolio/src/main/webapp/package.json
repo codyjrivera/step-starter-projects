@@ -33,6 +33,8 @@
     "@material/list": "^4.0.0",
     "@material/fab": "^4.0.0",
     "@material/card": "^4.0.0",
+    "@material/textfield": "^4.0.0",
+    "@material/select": "^4.0.0",
     "@hi-ui/core-css": "^2.0.1",
     "simple-icons": "*"
   },
