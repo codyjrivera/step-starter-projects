@@ -116,11 +116,14 @@ function deleteAllCommentsFromServer() {
 
 /**
  * Creates a comment card with the given comment text
+ * and sentiment score if it is provided.
  *
  * @param {String} commentText
+ * @param {any} sentimentScore Potential sentiment score,
+ * or undefined if no score to be displayed.
  * @return {Element}
  */
-function createCommentCard(commentText) {
+function createCommentCard(commentText, sentimentScore = undefined) {
   const cardElement = document.createElement('div');
   cardElement.classList.add('port-card');
 
@@ -129,6 +132,17 @@ function createCommentCard(commentText) {
   cardContents.innerHTML = commentText;
 
   cardElement.appendChild(cardContents);
+
+  if (typeof sentimentScore == 'number') {
+    const cardActions = document.createElement('div');
+    cardActions.classList.add('port-card-actions');
+    const sentimentCard = document.createElement('div');
+    sentimentCard.classList.add('port-card-action-right');
+    sentimentCard.innerHTML = convertSentimentScoreToEmoji(sentimentScore);
+    cardActions.appendChild(sentimentCard);
+    cardElement.appendChild(cardActions);
+  }
+
   return cardElement;
 }
 
@@ -144,17 +158,57 @@ function addCommentsToPage(comments) {
   // Clear existing HTML
   document.getElementById('comment-list').innerHTML = '';
   comments.forEach((comment) => {
-    const newCard = createCommentCard(comment);
+    const newCard = createCommentCard(
+      comment.commentText,
+      comment.sentimentScoreFlag ? comment.sentimentScore : undefined,
+    );
     document.getElementById('comment-list').appendChild(newCard);
   });
+}
+
+/**
+ * Converts sentiment score in the interval
+ * [-1.0, 1.0] to an appropriate emoji.
+ * (Note = -1.0 is extremely negative,
+ *  1.0 is extremely positive). Numbers outside
+ * this interval will be rounded towards zero
+ * to either -1.0 or 1.0.
+ *
+ * @param {number} sentimentScore
+ * @return {String} A string containing a single
+ * emoji character.
+ */
+function convertSentimentScoreToEmoji(sentimentScore) {
+  // Emotions are scaled to 11 different emojis.
+  const EMOJI_SENTIMENTS = [
+    '😭',
+    '😢',
+    '😥',
+    '😞',
+    '😕',
+    '😐',
+    '😐',
+    '😊',
+    '😀',
+    '😁',
+    '😇',
+  ];
+  let score = sentimentScore;
+  // Handle edge case
+  score = score > 1.0 ? 1.0 : score;
+  score = score < -1.0 ? -1.0 : score;
+
+  // Scale score to an integer in 0..10.
+  const emojiIndex = Math.floor((score + 1.0) * 5);
+  return EMOJI_SENTIMENTS[emojiIndex];
 }
 
 /**
  * Handles comment page errors by logging them and
  * notifying the user.
  *
- * @param error {any}
- * @param userMessage {String}
+ * @param {any} error
+ * @param {String} userMessage
  */
 function handleCommentError(error, userMessage) {
   const errorCard = createCommentCard('<b>' + userMessage + '</b>');
