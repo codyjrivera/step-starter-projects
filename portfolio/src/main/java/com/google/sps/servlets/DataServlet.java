@@ -76,16 +76,8 @@ public class DataServlet extends HttpServlet {
     Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
     for (Entity entity : results.asIterable()) {
-      String commentText = (String) entity.getProperty("text");
-      Comment el = new Comment(commentText);
-      if (entity.hasProperty("sentiment-score")) {
-        // This ugliness is because for some reason, the object I store
-        // in datastore is converted to a Double object. This code
-        // performs the conversion Double -> double -> float.
-        double score = (Double) entity.getProperty("sentiment-score");
-        el.setSentimentScore((float) score);
-      }
-      commentsList.add(el);
+      Comment com = new Comment(entity);
+      commentsList.add(com);
     }
 
     // If max-comments was provided, extract a sublist.
@@ -114,12 +106,15 @@ public class DataServlet extends HttpServlet {
     String commentText = getParameter(request, "comment-text", "");
     float commentSentiment = getSentiment(commentText);
 
+    Comment comment = new Comment(commentText);
+    comment.setSentimentScore(commentSentiment);
+
     // Create entity
     long timestamp = System.currentTimeMillis();
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("timestamp", timestamp);
-    commentEntity.setProperty("text", commentText);
-    commentEntity.setProperty("sentiment-score", commentSentiment);
+    // Transfers data from Comment class to entity.
+    comment.entityMarshall(commentEntity);
 
     // Add to database
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();

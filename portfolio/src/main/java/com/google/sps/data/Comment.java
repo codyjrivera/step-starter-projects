@@ -14,6 +14,8 @@
 
 package com.google.sps.data;
 
+import com.google.appengine.api.datastore.Entity;
+
 /** Comment data class */
 public class Comment {
 
@@ -33,6 +35,15 @@ public class Comment {
   public Comment(String commentText) {
     this.commentText = commentText;
     this.sentimentScoreFlag = false;
+  }
+
+  /**
+   * Constructs a comment object by unmarshalling an entity
+   *
+   * @param entity the entity to unmarshall
+   */
+  public Comment(Entity entity) {
+    entityUnMarshall(entity);
   }
 
   /** Getter and setter for commentText */
@@ -76,5 +87,38 @@ public class Comment {
   /** Deletes the comment's sentiment score */
   public void deleteSentimentScore() {
     sentimentScoreFlag = false;
+  }
+
+  /**
+   * Marshalls the current class instance into a Datastore entity.
+   *
+   * @param entity the entity to marshall data into.
+   */
+  public void entityMarshall(Entity entity) {
+    entity.setProperty("text", commentText);
+    if (sentimentScoreFlag) {
+      entity.setProperty("sentiment-score", sentimentScore);
+    } else {
+      entity.removeProperty("sentiment-score");
+    }
+  }
+
+  /**
+   * Unmarshalls the provided Datastore entity into this class instance, overwriting the instance's
+   * current fields.
+   *
+   * @param entity the entity to unmarshall data from.
+   */
+  public void entityUnMarshall(Entity entity) {
+    commentText = (String) entity.getProperty("text");
+    if (entity.hasProperty("sentiment-score")) {
+      sentimentScoreFlag = true;
+      // These few lines are the result of a float being converted
+      // to a Double object by Datastore
+      Double score = (Double) entity.getProperty("sentiment-score");
+      sentimentScore = score.floatValue();
+    } else {
+      sentimentScoreFlag = false;
+    }
   }
 }
