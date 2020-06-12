@@ -23,8 +23,6 @@ public class Comment {
   private String commentText;
 
   /* Comment sentiment */
-  private boolean sentimentScoreFlag;
-
   private float sentimentScore;
 
   /**
@@ -32,9 +30,9 @@ public class Comment {
    *
    * @param commentText the comment text
    */
-  public Comment(String commentText) {
+  public Comment(String commentText, float sentimentScore) {
     this.commentText = commentText;
-    this.sentimentScoreFlag = false;
+    this.sentimentScore = sentimentScore;
   }
 
   /**
@@ -55,38 +53,13 @@ public class Comment {
     this.commentText = commentText;
   }
 
-  /**
-   * Retreives comment sentiment -- provided hasSentimentScore is true -- otherwise the result is
-   * undefined.
-   *
-   * @return sentiment score provided hasSentimentScore is true.
-   */
+  /** Getter and setter for sentimentScore */
   public float getSentimentScore() {
     return sentimentScore;
   }
 
-  /**
-   * Sets comment sentiment score, setting hasSentimentScore as true if not already set.
-   *
-   * @param sentimentScore the score in the range [-1.0 to 1.0].
-   */
   public void setSentimentScore(float sentimentScore) {
     this.sentimentScore = sentimentScore;
-    this.sentimentScoreFlag = true;
-  }
-
-  /**
-   * Test if comment has sentiment score
-   *
-   * @return whether the comment has a sentiment score.
-   */
-  public boolean hasSentimentScore() {
-    return sentimentScoreFlag;
-  }
-
-  /** Deletes the comment's sentiment score */
-  public void deleteSentimentScore() {
-    sentimentScoreFlag = false;
   }
 
   /**
@@ -96,11 +69,7 @@ public class Comment {
    */
   public void entityMarshall(Entity entity) {
     entity.setProperty("text", commentText);
-    if (sentimentScoreFlag) {
-      entity.setProperty("sentiment-score", sentimentScore);
-    } else {
-      entity.removeProperty("sentiment-score");
-    }
+    entity.setProperty("sentiment-score", sentimentScore);
   }
 
   /**
@@ -111,14 +80,7 @@ public class Comment {
    */
   public void entityUnMarshall(Entity entity) {
     commentText = (String) entity.getProperty("text");
-    if (entity.hasProperty("sentiment-score")) {
-      sentimentScoreFlag = true;
-      // These few lines are the result of a float being converted
-      // to a Double object by Datastore
-      Double score = (Double) entity.getProperty("sentiment-score");
-      sentimentScore = score.floatValue();
-    } else {
-      sentimentScoreFlag = false;
-    }
+    Double score = (Double) entity.getProperty("sentiment-score");
+    sentimentScore = score.floatValue();
   }
 }

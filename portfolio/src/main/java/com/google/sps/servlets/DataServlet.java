@@ -106,8 +106,7 @@ public class DataServlet extends HttpServlet {
     String commentText = getParameter(request, "comment-text", "");
     float commentSentiment = getSentiment(commentText);
 
-    Comment comment = new Comment(commentText);
-    comment.setSentimentScore(commentSentiment);
+    Comment comment = new Comment(commentText, commentSentiment);
 
     // Create entity
     long timestamp = System.currentTimeMillis();

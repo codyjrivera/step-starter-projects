@@ -149,7 +149,7 @@ function createCommentCard(commentText, sentimentScore = undefined) {
 /**
  * Adds all of the comment messages in the passed
  * object to the page as cards. The passed object
- * should be of type Array<String>, otherwise,
+ * should be of type Array<Comment>, otherwise,
  * addCommentsToPage will throw an exception.
  *
  * @param {any} comments
@@ -160,7 +160,7 @@ function addCommentsToPage(comments) {
   comments.forEach((comment) => {
     const newCard = createCommentCard(
       comment.commentText,
-      comment.sentimentScoreFlag ? comment.sentimentScore : undefined,
+      comment.sentimentScore,
     );
     document.getElementById('comment-list').appendChild(newCard);
   });
