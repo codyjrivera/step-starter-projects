@@ -54,6 +54,10 @@
   @extend .mdc-card__actions;
 }
 
+.port-card-action-right {
+  margin-left: auto;
+}
+
 .port-card-button {
   @extend .mdc-button;
   @extend .mdc-card__action;

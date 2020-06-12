@@ -47,11 +47,42 @@ new MDCRipple(document.querySelector('.mdc-fab'));
  * returned by the server, provided it is a valid integer.
  * Otherwise, all comments are returned.
  *
- * @param {String} maxComments
+ * @param {string} maxComments
  * @return {Promise<any>}
  */
 function getCommentsFromServer(maxComments) {
   return fetch('/data' + '?max-comments=' + maxComments).then((response) => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      return Promise.reject(
+        new Error(response.status + ': ' + response.statusText),
+      );
+    }
+  });
+}
+
+/**
+ * Adds comment data to the server by submitting a POST
+ * request to /data. commentText contains the string that
+ * will be stored in the comment. Returns a promise with
+ * an undefined value on success.
+ *
+ * @param {string} commentText
+ * @return {Promise<any>}
+ */
+function submitCommentToServer(commentText) {
+  // Package POST arguments
+  const args = new URLSearchParams();
+  args.append('comment-text', commentText);
+  // Submit POST request
+  return fetch('/data', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: args,
+  }).then((response) => {
     if (response.ok) {
       return response.json();
     } else {
@@ -85,11 +116,14 @@ function deleteAllCommentsFromServer() {
 
 /**
  * Creates a comment card with the given comment text
+ * and sentiment score if it is provided.
  *
- * @param {String} commentText
+ * @param {string} commentText
+ * @param {any} sentimentScore Potential sentiment score,
+ * or undefined if no score to be displayed.
  * @return {Element}
  */
-function createCommentCard(commentText) {
+function createCommentCard(commentText, sentimentScore = undefined) {
   const cardElement = document.createElement('div');
   cardElement.classList.add('port-card');
 
@@ -98,13 +132,24 @@ function createCommentCard(commentText) {
   cardContents.innerHTML = commentText;
 
   cardElement.appendChild(cardContents);
+
+  if (typeof sentimentScore == 'number') {
+    const cardActions = document.createElement('div');
+    cardActions.classList.add('port-card-actions');
+    const sentimentCard = document.createElement('div');
+    sentimentCard.classList.add('port-card-action-right');
+    sentimentCard.innerHTML = convertSentimentScoreToEmoji(sentimentScore);
+    cardActions.appendChild(sentimentCard);
+    cardElement.appendChild(cardActions);
+  }
+
   return cardElement;
 }
 
 /**
  * Adds all of the comment messages in the passed
  * object to the page as cards. The passed object
- * should be of type Array<String>, otherwise,
+ * should be of type Array<Comment>, otherwise,
  * addCommentsToPage will throw an exception.
  *
  * @param {any} comments
@@ -113,17 +158,54 @@ function addCommentsToPage(comments) {
   // Clear existing HTML
   document.getElementById('comment-list').innerHTML = '';
   comments.forEach((comment) => {
-    const newCard = createCommentCard(comment);
+    const newCard = createCommentCard(
+      comment.commentText,
+      comment.sentimentScore,
+    );
     document.getElementById('comment-list').appendChild(newCard);
   });
+}
+
+/**
+ * Converts sentiment score in the interval
+ * [-1.0, 1.0] to an appropriate emoji.
+ * (Note = -1.0 is extremely negative,
+ *  1.0 is extremely positive). Numbers outside
+ * this interval will be rounded towards zero
+ * to either -1.0 or 1.0.
+ *
+ * @param {number} sentimentScore
+ * @return {string} A string containing a single
+ * emoji character.
+ */
+function convertSentimentScoreToEmoji(sentimentScore) {
+  // Emotions are scaled to 10 different emojis.
+  const EMOJI_SENTIMENTS = [
+    '😭',
+    '😢',
+    '😥',
+    '😞',
+    '😕',
+    '😐',
+    '😊',
+    '😀',
+    '😁',
+    '😇',
+  ];
+  // Clamp to [-1, 1]
+  const score = Math.max(-1, Math.min(1, sentimentScore));
+
+  // Scale score to an integer in 0..9.
+  const emojiIndex = Math.min(9, Math.floor((score + 1.0) * 5));
+  return EMOJI_SENTIMENTS[emojiIndex];
 }
 
 /**
  * Handles comment page errors by logging them and
  * notifying the user.
  *
- * @param error {any}
- * @param userMessage {String}
+ * @param {Error} error
+ * @param {string} userMessage
  */
 function handleCommentError(error, userMessage) {
   const errorCard = createCommentCard('<b>' + userMessage + '</b>');
@@ -150,6 +232,22 @@ function handleUpdateComments() {
 }
 
 /**
+ * Adds a comment to the server, taking text from the input
+ * form.
+ *
+ */
+function handleAddComment() {
+  const el = document.getElementById('comment-text');
+  const commentText = el.value;
+  el.value = '';
+  submitCommentToServer(commentText)
+    .then(handleUpdateComments)
+    .catch((error) =>
+      handleCommentError(error, 'Unable to add comment to server'),
+    );
+}
+
+/**
  * Deletes all comments from the server and reloads the page
  *
  */
@@ -165,6 +263,18 @@ function handleDeleteAllComments() {
 document
   .getElementById('comment-delete')
   .addEventListener('click', handleDeleteAllComments);
+
+document
+  .getElementById('comment-submit')
+  .addEventListener('click', handleAddComment);
+
+/** Add 'enter' keystroke listener to comment input field */
+document.getElementById('comment-text').addEventListener('keyup', (event) => {
+  if (event.key === 'Enter') {
+    handleAddComment();
+  }
+});
+
 /** Change in number of comments displayed per page */
 document
   .getElementById('comment-number')

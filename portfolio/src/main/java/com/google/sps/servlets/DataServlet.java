@@ -20,7 +20,11 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.cloud.language.v1.Document;
+import com.google.cloud.language.v1.LanguageServiceClient;
+import com.google.cloud.language.v1.Sentiment;
 import com.google.gson.Gson;
+import com.google.sps.data.Comment;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,13 +70,14 @@ public class DataServlet extends HttpServlet {
     }
 
     // Gets all existing comments from database
-    List<String> commentsList = new ArrayList<String>();
+    List<Comment> commentsList = new ArrayList<Comment>();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
     for (Entity entity : results.asIterable()) {
-      commentsList.add(entity.getProperty("text").toString());
+      Comment com = new Comment(entity);
+      commentsList.add(com);
     }
 
     // If max-comments was provided, extract a sublist.
@@ -97,19 +102,43 @@ public class DataServlet extends HttpServlet {
    */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // Constructs comment and gets comment sentiment
     String commentText = getParameter(request, "comment-text", "");
+    float commentSentiment = getSentiment(commentText);
+
+    Comment comment = new Comment(commentText, commentSentiment);
 
     // Create entity
     long timestamp = System.currentTimeMillis();
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("timestamp", timestamp);
-    commentEntity.setProperty("text", commentText);
+    // Transfers data from Comment class to entity.
+    comment.entityMarshall(commentEntity);
 
     // Add to database
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(commentEntity);
 
-    response.sendRedirect("/com.html");
+    response.setContentType("application/json;");
+    response.getWriter().println("{ \"status\": \"ok\" }");
+  }
+
+  /**
+   * Attains the sentiment of the comment string according to Google Cloud Natural Language
+   * sentiment analysis. The sentiment is graded on a one-dimensional scale of positive or negative,
+   * with -1.0 = negative and 1.0 = positive.
+   *
+   * @param comment The comment to analyze
+   * @return A sentiment score in the interval [-1.0, 1.0]
+   */
+  private float getSentiment(String comment) throws IOException {
+    Document doc =
+        Document.newBuilder().setContent(comment).setType(Document.Type.PLAIN_TEXT).build();
+    LanguageServiceClient languageService = LanguageServiceClient.create();
+    Sentiment sentiment = languageService.analyzeSentiment(doc).getDocumentSentiment();
+    float score = sentiment.getScore();
+    languageService.close();
+    return score;
   }
 
   /**
