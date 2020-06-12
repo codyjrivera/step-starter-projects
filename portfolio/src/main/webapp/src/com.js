@@ -237,7 +237,9 @@ function handleUpdateComments() {
  *
  */
 function handleAddComment() {
-  const commentText = document.getElementById('comment-text').value;
+  const el = document.getElementById('comment-text');
+  const commentText = el.value;
+  el.value = '';
   submitCommentToServer(commentText)
     .then(handleUpdateComments)
     .catch((error) =>
