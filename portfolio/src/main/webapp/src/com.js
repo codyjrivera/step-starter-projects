@@ -47,7 +47,7 @@ new MDCRipple(document.querySelector('.mdc-fab'));
  * returned by the server, provided it is a valid integer.
  * Otherwise, all comments are returned.
  *
- * @param {String} maxComments
+ * @param {string} maxComments
  * @return {Promise<any>}
  */
 function getCommentsFromServer(maxComments) {
@@ -68,7 +68,7 @@ function getCommentsFromServer(maxComments) {
  * will be stored in the comment. Returns a promise with
  * an undefined value on success.
  *
- * @param {String} commentText
+ * @param {string} commentText
  * @return {Promise<any>}
  */
 function submitCommentToServer(commentText) {
@@ -118,7 +118,7 @@ function deleteAllCommentsFromServer() {
  * Creates a comment card with the given comment text
  * and sentiment score if it is provided.
  *
- * @param {String} commentText
+ * @param {string} commentText
  * @param {any} sentimentScore Potential sentiment score,
  * or undefined if no score to be displayed.
  * @return {Element}
@@ -175,11 +175,11 @@ function addCommentsToPage(comments) {
  * to either -1.0 or 1.0.
  *
  * @param {number} sentimentScore
- * @return {String} A string containing a single
+ * @return {string} A string containing a single
  * emoji character.
  */
 function convertSentimentScoreToEmoji(sentimentScore) {
-  // Emotions are scaled to 11 different emojis.
+  // Emotions are scaled to 10 different emojis.
   const EMOJI_SENTIMENTS = [
     '😭',
     '😢',
@@ -187,19 +187,16 @@ function convertSentimentScoreToEmoji(sentimentScore) {
     '😞',
     '😕',
     '😐',
-    '😐',
     '😊',
     '😀',
     '😁',
     '😇',
   ];
-  let score = sentimentScore;
-  // Handle edge case
-  score = score > 1.0 ? 1.0 : score;
-  score = score < -1.0 ? -1.0 : score;
+  // Clamp to [-1, 1]
+  const score = Math.max(-1, Math.min(1, sentimentScore));
 
-  // Scale score to an integer in 0..10.
-  const emojiIndex = Math.floor((score + 1.0) * 5);
+  // Scale score to an integer in 0..9.
+  const emojiIndex = Math.min(9, Math.floor((score + 1.0) * 5));
   return EMOJI_SENTIMENTS[emojiIndex];
 }
 
@@ -207,8 +204,8 @@ function convertSentimentScoreToEmoji(sentimentScore) {
  * Handles comment page errors by logging them and
  * notifying the user.
  *
- * @param {any} error
- * @param {String} userMessage
+ * @param {Error} error
+ * @param {string} userMessage
  */
 function handleCommentError(error, userMessage) {
   const errorCard = createCommentCard('<b>' + userMessage + '</b>');
