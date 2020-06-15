@@ -117,17 +117,22 @@ function deleteAllCommentsFromServer() {
 }
 
 /**
- * Creates a comment card with the given comment text
+ * Creates a comment card with the given comment poster, comment text
  * and sentiment score if it is provided.
  *
+ * @param {string} commentPoster
  * @param {string} commentText
  * @param {any} sentimentScore Potential sentiment score,
  * or undefined if no score to be displayed.
  * @return {Element}
  */
-function createCommentCard(commentText, sentimentScore = undefined) {
+function createCommentCard(commentPoster, commentText, sentimentScore = undefined) {
   const cardElement = document.createElement('div');
   cardElement.classList.add('port-card');
+
+  const cardTitle = document.createElement('div');
+  cardElement.classList.add('port-card-title');
+  cardElement.innerHTML = commentPoster + ' writes:';
 
   const cardContents = document.createElement('div');
   cardContents.classList.add('port-card-contents');
