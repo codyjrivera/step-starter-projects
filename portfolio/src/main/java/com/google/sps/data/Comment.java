@@ -40,9 +40,9 @@ public class Comment {
    *
    * @param entity the entity to unmarshall
    */
-  public Comment(Entity entity) {
-    entityUnMarshall(entity);
-  }
+  private Comment(Entity entity) {
+    entityUnmarshall(entity);
+  }  
 
   /** Getter and setter for commentText */
   public String getCommentText() {
@@ -78,9 +78,35 @@ public class Comment {
    *
    * @param entity the entity to unmarshall data from.
    */
-  public void entityUnMarshall(Entity entity) {
+  public void entityUnmarshall(Entity entity) {
     commentText = (String) entity.getProperty("text");
     Double score = (Double) entity.getProperty("sentiment-score");
     sentimentScore = score.floatValue();
+  }
+
+  /**
+   * Generates a comment from an entity
+   *
+   * @param entity the entity to generate the comment from
+   * @return the new comment with the entity's information.
+   */
+  public static Comment from(Entity entity) {
+    // Elegant wrapper for private constructor.
+    return new Comment(entity);
+  }
+
+  /**
+   * Generates an entity from a comment
+   *
+   * @return A freshly-created Comment entity with the current
+   * timestamp.
+   */
+  public Entity toEntity() {
+    Entity entity = new Entity("Comment");
+    // Fill timestamp
+    entity.setProperty("timestamp", System.currentTimeMillis());
+    // Fill rest of comment
+    entityMarshall(entity);
+    return entity;
   }
 }

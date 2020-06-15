@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
@@ -30,6 +31,7 @@ import com.google.sps.data.Comment;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.regex.Pattern;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -72,15 +74,13 @@ public class DataServlet extends HttpServlet {
     }
 
     // Gets all existing comments from database
-    List<Comment> commentsList = new ArrayList<Comment>();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
-    for (Entity entity : results.asIterable()) {
-      Comment com = new Comment(entity);
-      commentsList.add(com);
-    }
+
+    // Map entities into Comment instances.
+    List<Comment> commentsList = results.asList(FetchOptions.Builder.withDefaults()).stream().map(Comment::from).collect(Collectors.toList());
 
     // If max-comments was provided, extract a sublist.
     if (hasMaxComments) {
@@ -114,11 +114,7 @@ public class DataServlet extends HttpServlet {
       Comment comment = new Comment(commentText, commentSentiment);
 
       // Create entity
-      long timestamp = System.currentTimeMillis();
-      Entity commentEntity = new Entity("Comment");
-      commentEntity.setProperty("timestamp", timestamp);
-      // Transfers data from Comment class to entity.
-      comment.entityMarshall(commentEntity);
+      Entity commentEntity = comment.toEntity();
 
       // Add to database
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
