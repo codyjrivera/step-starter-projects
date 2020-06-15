@@ -87,9 +87,8 @@ public class DataServlet extends HttpServlet {
 
     // Convert List of comments to JSON.
     Gson gson = new Gson();
-    String commentsListJson = gson.toJson(commentsList);
     response.setContentType("application/json;");
-    response.getWriter().println(commentsListJson);
+    response.getWriter().println(gson.toJson(commentsList));
   }
 
   /**

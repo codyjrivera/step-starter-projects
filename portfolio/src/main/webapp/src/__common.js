@@ -22,8 +22,13 @@
  * @module
  */
 
+/** Social media icon imports */
 import github from 'simple-icons/icons/github';
 import linkedin from 'simple-icons/icons/linkedin';
+
+/** Generic icon imports */
+import { icon } from '@fortawesome/fontawesome-svg-core';
+import { faSignInAlt, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 
 import { Globals } from './__globals';
 
@@ -107,7 +112,31 @@ function createTopBarContents(currentPage) {
     topBarTitle.appendChild(newElement);
   });
 
+  // Determines whether the user is logged in or logged out,
+  // and displays the appropriate top bar element.
+  topBarTitle.appendChild(createLoginStatusBox());
+
   return topBarTitle;
+}
+
+/**
+ * Constructs a Material button element that is not
+ * a link.
+ *
+ * @param {string} buttonLabel
+ * @return {Element}
+ */
+function createButton(buttonLabel) {
+  const buttonElement = document.createElement('div');
+  buttonElement.classList.add('mdc-button');
+  const rippleElement = document.createElement('div');
+  rippleElement.classList.add('mdc-button__ripple');
+  const textElement = document.createElement('span');
+  textElement.classList.add('mdc-button__label');
+  textElement.innerHTML = buttonLabel;
+  buttonElement.appendChild(rippleElement);
+  buttonElement.appendChild(textElement);
+  return buttonElement;
 }
 
 /**
@@ -130,6 +159,64 @@ function createButtonLink(buttonLabel, buttonLink) {
   buttonElement.appendChild(rippleElement);
   buttonElement.appendChild(textElement);
   return buttonElement;
+}
+
+/**
+ * Gets the user's login status, username, and
+ * login API url from the server.
+ *
+ * @return {Promise<any>}
+ */
+function getLoginStatus() {
+  return fetch('/login').then((response) => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      return Promise.reject(
+        new Error(response.status + ': ' + response.statusText),
+      );
+    }
+  });
+}
+
+/**
+ * Constructs a login status box, based on login information
+ * It will contain a link to either a login or logout page
+ * and the user's nickname if logged in.
+ *
+ * @return {Element}
+ */
+function createLoginStatusBox() {
+  const boxElement = document.createElement('div');
+  boxElement.classList.add('mdc-top-app-bar__action-item');
+  getLoginStatus()
+    .then((status) => {
+      // If user is logged in, display "Hi, {nickname}"
+      if (status.loggedInFlag) {
+        const loggedInGreeting = createButton('Hi, ' + status.nickname);
+        loggedInGreeting.classList.add('mdc-top-app-bar__action-item');
+        boxElement.appendChild(loggedInGreeting);
+      }
+      // Either a login or logout button
+      const buttonElement = createButtonLink(
+        status.loggedInFlag ? icon(faSignInAlt).html 
+                            : icon(faSignOutAlt).html,
+        status.actionURL,
+      );
+      buttonElement.children.item(1).firstChild.setAttribute("viewbox", "0 32 384 384");
+      const buttonAnnotation = status.loggedInFlag ? 'Log out' : 'Log in';
+      // Puts tooltip and screen-reader label on button icon element.
+      buttonElement.setAttribute('aria-label', buttonAnnotation);
+      buttonElement.setAttribute('title', buttonAnnotation);
+      buttonElement.classList.add('mdc-top-app-bar__action-item');
+      // Tag underneath button
+      boxElement.appendChild(buttonElement);
+    })
+    .catch((error) => {
+      boxElement.innerHTML = 'Login service unavailable';
+      console.error(error);
+    });
+  return boxElement;
 }
 
 /**

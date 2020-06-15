@@ -36,7 +36,9 @@
     "@material/textfield": "^4.0.0",
     "@material/select": "^4.0.0",
     "@hi-ui/core-css": "^2.0.1",
-    "simple-icons": "*"
+    "simple-icons": "*",
+    "@fortawesome/free-solid-svg-icons": "*",
+    "@fortawesome/fontawesome-svg-core": "*"
   },
   "engines": {
     "node": "12.x"
