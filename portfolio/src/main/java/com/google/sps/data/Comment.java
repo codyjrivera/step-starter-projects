@@ -19,6 +19,9 @@ import com.google.appengine.api.datastore.Entity;
 /** Comment data class */
 public class Comment {
 
+  /* Comment poster */
+  private String commentPoster;
+
   /* Comment text */
   private String commentText;
 
@@ -28,9 +31,12 @@ public class Comment {
   /**
    * Constructs a comment object with given text
    *
+   * @param commentPoster the username of the poster
    * @param commentText the comment text
+   * @param sentimentScore the sentiment of the comment
    */
-  public Comment(String commentText, float sentimentScore) {
+  public Comment(String commentPoster, String commentText, float sentimentScore) {
+    this.commentPoster = commentPoster
     this.commentText = commentText;
     this.sentimentScore = sentimentScore;
   }
@@ -43,6 +49,15 @@ public class Comment {
   private Comment(Entity entity) {
     entityUnmarshall(entity);
   }  
+
+  /** Getter and setter for commentPoster */
+  public String getCommentPoster() {
+    return commentPoster;
+  }
+
+  public void setCommentPoster(String commentPoster) {
+    this.commentPoster = commentPoster;
+  }
 
   /** Getter and setter for commentText */
   public String getCommentText() {
@@ -68,6 +83,7 @@ public class Comment {
    * @param entity the entity to marshall data into.
    */
   public void entityMarshall(Entity entity) {
+    entity.setProperty("poster", commentPoster);
     entity.setProperty("text", commentText);
     entity.setProperty("sentiment-score", sentimentScore);
   }
@@ -79,6 +95,7 @@ public class Comment {
    * @param entity the entity to unmarshall data from.
    */
   public void entityUnmarshall(Entity entity) {
+    commentPoster = (String) entity.getProperty("poster");
     commentText = (String) entity.getProperty("text");
     Double score = (Double) entity.getProperty("sentiment-score");
     sentimentScore = score.floatValue();
