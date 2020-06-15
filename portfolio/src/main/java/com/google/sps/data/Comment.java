@@ -48,7 +48,7 @@ public class Comment {
    */
   private Comment(Entity entity) {
     entityUnmarshall(entity);
-  }  
+  }
 
   /** Getter and setter for commentPoster */
   public String getCommentPoster() {
@@ -115,8 +115,7 @@ public class Comment {
   /**
    * Generates an entity from a comment
    *
-   * @return A freshly-created Comment entity with the current
-   * timestamp.
+   * @return A freshly-created Comment entity with the current timestamp.
    */
   public Entity toEntity() {
     Entity entity = new Entity("Comment");

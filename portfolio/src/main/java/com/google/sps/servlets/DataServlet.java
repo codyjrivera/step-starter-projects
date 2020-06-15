@@ -29,10 +29,9 @@ import com.google.cloud.language.v1.Sentiment;
 import com.google.gson.Gson;
 import com.google.sps.data.Comment;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -80,7 +79,10 @@ public class DataServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
 
     // Map entities into Comment instances.
-    List<Comment> commentsList = results.asList(FetchOptions.Builder.withDefaults()).stream().map(Comment::from).collect(Collectors.toList());
+    List<Comment> commentsList =
+        results.asList(FetchOptions.Builder.withDefaults()).stream()
+            .map(Comment::from)
+            .collect(Collectors.toList());
 
     // If max-comments was provided, extract a sublist.
     if (hasMaxComments) {
@@ -94,10 +96,9 @@ public class DataServlet extends HttpServlet {
   }
 
   /**
-   * Processes HTTP POST requests for the /data servlet The requests are responded to by appending
-   * a comment to the datastore database. All necessary fields will be 
-   * assembled here. If the user is not logged in, then the status field in
-   * the response json will be set to 'no-login'
+   * Processes HTTP POST requests for the /data servlet The requests are responded to by appending a
+   * comment to the datastore database. All necessary fields will be assembled here. If the user is
+   * not logged in, then the status field in the response json will be set to 'no-login'
    *
    * @param request Information about the POST Request
    * @param response Information about the servlet's response

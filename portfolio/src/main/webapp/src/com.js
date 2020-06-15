@@ -126,7 +126,11 @@ function deleteAllCommentsFromServer() {
  * or undefined if no score to be displayed.
  * @return {Element}
  */
-function createCommentCard(commentText, commentPoster = undefined, sentimentScore = undefined) {
+function createCommentCard(
+  commentText,
+  commentPoster = undefined,
+  sentimentScore = undefined,
+) {
   const cardElement = document.createElement('div');
   cardElement.classList.add('port-card');
 
@@ -258,7 +262,7 @@ function handleAddComment() {
         document.getElementById('no-login-modal-message').innerHTML =
           'You must be logged in to submit a comment.';
         // Show message.
-        document.getElementById('no-login-modal').style.display = "flex";
+        document.getElementById('no-login-modal').style.display = 'flex';
       }
       handleUpdateComments();
     })
@@ -279,7 +283,7 @@ function handleDeleteAllComments() {
         document.getElementById('no-login-modal-message').innerHTML =
           'You must be logged in to delete all comments.';
         // Show message.
-        document.getElementById('no-login-modal').style.display = "flex";
+        document.getElementById('no-login-modal').style.display = 'flex';
       }
       handleUpdateComments();
     })
@@ -312,8 +316,10 @@ document
 /** Not Logged In modal close */
 document
   .getElementById('no-login-modal-close')
-  .addEventListener('click', () => 
-    document.getElementById('no-login-modal').style.display = 'none');
+  .addEventListener(
+    'click',
+    () => (document.getElementById('no-login-modal').style.display = 'none'),
+  );
 
 /** Once the page loads, request comments */
 handleUpdateComments();
