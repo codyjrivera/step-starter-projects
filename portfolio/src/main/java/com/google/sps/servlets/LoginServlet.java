@@ -14,11 +14,6 @@
 
 package com.google.sps.servlets;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
@@ -29,17 +24,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet that returns whether a user is logged in or logged out,
- * as well as an appropriate login or logout link, on a GET request.
+ * Servlet that returns whether a user is logged in or logged out, as well as an appropriate login
+ * or logout link, on a GET request.
  */
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
   static final long serialVersionUID = 3L;
 
-  /**
-   * Structure that results are returned in JSON form in.
-   */
+  /** Structure that results are returned in JSON form in. */
   private class LoginData {
     public boolean loggedInFlag;
     public String actionURL;
@@ -47,9 +40,8 @@ public class LoginServlet extends HttpServlet {
   }
 
   /**
-   * Processes HTTP GET requests for the /login servlet. This servlet returns a flag that
-   * indicates whether the user has logged out, as well as a URL to the appropriate login or
-   * logout page.
+   * Processes HTTP GET requests for the /login servlet. This servlet returns a flag that indicates
+   * whether the user has logged out, as well as a URL to the appropriate login or logout page.
    *
    * @param request Information about the GET Request
    * @param response Information about the servlet's response

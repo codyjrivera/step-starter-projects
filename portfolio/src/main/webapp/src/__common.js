@@ -26,10 +26,6 @@
 import github from 'simple-icons/icons/github';
 import linkedin from 'simple-icons/icons/linkedin';
 
-/** Generic icon imports */
-import { icon } from '@fortawesome/fontawesome-svg-core';
-import { faSignInAlt, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
-
 import { Globals } from './__globals';
 
 export { createTopBar, createFloatingLinks };
@@ -199,11 +195,10 @@ function createLoginStatusBox() {
       }
       // Either a login or logout button
       const buttonElement = createButtonLink(
-        status.loggedInFlag ? icon(faSignInAlt).html 
-                            : icon(faSignOutAlt).html,
+        status.loggedInFlag ? Globals.logoutIcon : Globals.loginIcon,
         status.actionURL,
       );
-      buttonElement.children.item(1).firstChild.setAttribute("viewbox", "0 32 384 384");
+      buttonElement.children.item(1).classList.add('svg-icon');
       const buttonAnnotation = status.loggedInFlag ? 'Log out' : 'Log in';
       // Puts tooltip and screen-reader label on button icon element.
       buttonElement.setAttribute('aria-label', buttonAnnotation);

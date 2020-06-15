@@ -36,6 +36,12 @@
   @extend .mdc-typography;
 }
 
+// Style login-logout icon.
+.svg-icon {
+  padding-top: 0.25em;
+  width: 1.5em;
+}
+
 // Material-styled lists
 ul {
   @extend .mdc-typography;
