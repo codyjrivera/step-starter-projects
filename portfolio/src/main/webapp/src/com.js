@@ -120,19 +120,22 @@ function deleteAllCommentsFromServer() {
  * Creates a comment card with the given comment poster, comment text
  * and sentiment score if it is provided.
  *
- * @param {string} commentPoster
  * @param {string} commentText
+ * @param {any} commentPoster
  * @param {any} sentimentScore Potential sentiment score,
  * or undefined if no score to be displayed.
  * @return {Element}
  */
-function createCommentCard(commentPoster, commentText, sentimentScore = undefined) {
+function createCommentCard(commentText, commentPoster = undefined, sentimentScore = undefined) {
   const cardElement = document.createElement('div');
   cardElement.classList.add('port-card');
 
-  const cardTitle = document.createElement('div');
-  cardElement.classList.add('port-card-title');
-  cardElement.innerHTML = commentPoster + ' writes:';
+  if (typeof commentPoster === 'string') {
+    const cardTitle = document.createElement('div');
+    cardTitle.classList.add('port-card-title');
+    cardTitle.innerHTML = commentPoster + ' writes:';
+    cardElement.appendChild(cardTitle);
+  }
 
   const cardContents = document.createElement('div');
   cardContents.classList.add('port-card-contents');
@@ -140,7 +143,7 @@ function createCommentCard(commentPoster, commentText, sentimentScore = undefine
 
   cardElement.appendChild(cardContents);
 
-  if (typeof sentimentScore == 'number') {
+  if (typeof sentimentScore === 'number') {
     const cardActions = document.createElement('div');
     cardActions.classList.add('port-card-actions');
     const sentimentCard = document.createElement('div');
@@ -167,6 +170,7 @@ function addCommentsToPage(comments) {
   comments.forEach((comment) => {
     const newCard = createCommentCard(
       comment.commentText,
+      comment.commentPoster,
       comment.sentimentScore,
     );
     document.getElementById('comment-list').appendChild(newCard);

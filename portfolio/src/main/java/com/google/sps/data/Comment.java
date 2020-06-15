@@ -36,7 +36,7 @@ public class Comment {
    * @param sentimentScore the sentiment of the comment
    */
   public Comment(String commentPoster, String commentText, float sentimentScore) {
-    this.commentPoster = commentPoster
+    this.commentPoster = commentPoster;
     this.commentText = commentText;
     this.sentimentScore = sentimentScore;
   }
