@@ -19,6 +19,8 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -33,23 +35,32 @@ public class DeleteDataServlet extends HttpServlet {
 
   /**
    * Processes HTTP POST requests for the /delete-data servlet This servlet deletes all records on
-   * the Comments table in CloudStore.
+   * the Comments table in CloudStore, if a user is logged in. Otherwise, this servlet does nothing,
+   * and returns 'no-login' in the status field of the response.
    *
    * @param request Information about the POST Request
    * @param response Information about the servlet's response
    */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Get all Comments from datastore, so we can delete by key.
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    UserService userService = UserServiceFactory.getUserService();
 
-    Query query = new Query("Comment");
-    PreparedQuery results = datastore.prepare(query);
-    for (Entity entity : results.asIterable()) {
-      datastore.delete(entity.getKey());
+    if (userService.isUserLoggedIn()) {
+      // Get all Comments from datastore, so we can delete by key.
+      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+      Query query = new Query("Comment");
+      PreparedQuery results = datastore.prepare(query);
+      for (Entity entity : results.asIterable()) {
+        datastore.delete(entity.getKey());
+      }
+
+      response.setContentType("application/json;");
+      response.getWriter().println("{ \"status\": \"ok\" }");
+    } else {
+      // User is not logged in
+      response.setContentType("application/json;");
+      response.getWriter().println("{ \"status\": \"no-login\" }");
     }
-
-    response.setContentType("application/json;");
-    response.getWriter().println("{ \"status\": \"ok\" }");
   }
 }

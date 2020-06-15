@@ -66,7 +66,8 @@ function getCommentsFromServer(maxComments) {
  * Adds comment data to the server by submitting a POST
  * request to /data. commentText contains the string that
  * will be stored in the comment. Returns a promise with
- * an undefined value on success.
+ * an object containing the field 'success', which contains
+ * 'ok' or a reason for failure.
  *
  * @param {string} commentText
  * @return {Promise<any>}
@@ -96,7 +97,8 @@ function submitCommentToServer(commentText) {
 /**
  * Deletes all comments data from server by submitting a
  * POST request to /delete-data. Returns a promise with
- * an undefined value on success.
+ * an object containing the field 'success', which contains
+ * 'ok' or a reason for failure.
  *
  * @return {Promise<any>}
  */
@@ -241,7 +243,16 @@ function handleAddComment() {
   const commentText = el.value;
   el.value = '';
   submitCommentToServer(commentText)
-    .then(handleUpdateComments)
+    .then((response) => {
+      // Displays login error message.
+      if (response.status === 'no-login') {
+        document.getElementById('no-login-modal-message').innerHTML =
+          'You must be logged in to submit a comment.';
+        // Show message.
+        document.getElementById('no-login-modal').style.display = "flex";
+      }
+      handleUpdateComments();
+    })
     .catch((error) =>
       handleCommentError(error, 'Unable to add comment to server'),
     );
@@ -253,7 +264,16 @@ function handleAddComment() {
  */
 function handleDeleteAllComments() {
   deleteAllCommentsFromServer()
-    .then(handleUpdateComments)
+    .then((response) => {
+      // Displays login error message.
+      if (response.status === 'no-login') {
+        document.getElementById('no-login-modal-message').innerHTML =
+          'You must be logged in to delete all comments.';
+        // Show message.
+        document.getElementById('no-login-modal').style.display = "flex";
+      }
+      handleUpdateComments();
+    })
     .catch((error) =>
       handleCommentError(error, 'Unable to delete comments from server'),
     );
@@ -279,6 +299,12 @@ document.getElementById('comment-text').addEventListener('keyup', (event) => {
 document
   .getElementById('comment-number')
   .addEventListener('change', handleUpdateComments);
+
+/** Not Logged In modal close */
+document
+  .getElementById('no-login-modal-close')
+  .addEventListener('click', () => 
+    document.getElementById('no-login-modal').style.display = 'none');
 
 /** Once the page loads, request comments */
 handleUpdateComments();

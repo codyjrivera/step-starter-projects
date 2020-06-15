@@ -20,6 +20,8 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.cloud.language.v1.Sentiment;
@@ -93,33 +95,42 @@ public class DataServlet extends HttpServlet {
 
   /**
    * Processes HTTP POST requests for the /data servlet The requests are responded to by appending
-   * the 'comment-text' argument of the POST request to the Datastore database. The client is then
-   * redirected back to the com.html page.
+   * a comment to the datastore database. All necessary fields will be 
+   * assembled here. If the user is not logged in, then the status field in
+   * the response json will be set to 'no-login'
    *
    * @param request Information about the POST Request
    * @param response Information about the servlet's response
    */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Constructs comment and gets comment sentiment
-    String commentText = getParameter(request, "comment-text", "");
-    float commentSentiment = getSentiment(commentText);
+    UserService userService = UserServiceFactory.getUserService();
 
-    Comment comment = new Comment(commentText, commentSentiment);
+    if (userService.isUserLoggedIn()) {
+      // Constructs comment and gets comment sentiment
+      String commentText = getParameter(request, "comment-text", "");
+      float commentSentiment = getSentiment(commentText);
 
-    // Create entity
-    long timestamp = System.currentTimeMillis();
-    Entity commentEntity = new Entity("Comment");
-    commentEntity.setProperty("timestamp", timestamp);
-    // Transfers data from Comment class to entity.
-    comment.entityMarshall(commentEntity);
+      Comment comment = new Comment(commentText, commentSentiment);
 
-    // Add to database
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(commentEntity);
+      // Create entity
+      long timestamp = System.currentTimeMillis();
+      Entity commentEntity = new Entity("Comment");
+      commentEntity.setProperty("timestamp", timestamp);
+      // Transfers data from Comment class to entity.
+      comment.entityMarshall(commentEntity);
 
-    response.setContentType("application/json;");
-    response.getWriter().println("{ \"status\": \"ok\" }");
+      // Add to database
+      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+      datastore.put(commentEntity);
+
+      response.setContentType("application/json;");
+      response.getWriter().println("{ \"status\": \"ok\" }");
+    } else {
+      // Return user not logged in
+      response.setContentType("application/json;");
+      response.getWriter().println("{ \"status\": \"no-login\" }");
+    }
   }
 
   /**
