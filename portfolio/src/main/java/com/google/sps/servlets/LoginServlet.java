@@ -34,9 +34,9 @@ public class LoginServlet extends HttpServlet {
 
   /** Structure that results are returned in JSON form in. */
   private class LoginData {
-    public boolean loggedInFlag;
-    public String actionURL;
-    public String nickname;
+    private boolean loggedInFlag;
+    private String actionURL;
+    private String nickname;
   }
 
   /**

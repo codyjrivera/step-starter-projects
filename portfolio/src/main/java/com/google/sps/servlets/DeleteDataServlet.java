@@ -45,22 +45,21 @@ public class DeleteDataServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
 
-    if (userService.isUserLoggedIn()) {
-      // Get all Comments from datastore, so we can delete by key.
-      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
-      Query query = new Query("Comment");
-      PreparedQuery results = datastore.prepare(query);
-      for (Entity entity : results.asIterable()) {
-        datastore.delete(entity.getKey());
-      }
-
-      response.setContentType("application/json;");
-      response.getWriter().println("{ \"status\": \"ok\" }");
-    } else {
-      // User is not logged in
+    if (!userService.isUserLoggedIn()) {
       response.setContentType("application/json;");
       response.getWriter().println("{ \"status\": \"no-login\" }");
+      return;
     }
+    // Get all Comments from datastore, so we can delete by key.
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+    Query query = new Query("Comment");
+    PreparedQuery results = datastore.prepare(query);
+    for (Entity entity : results.asIterable()) {
+      datastore.delete(entity.getKey());
+    }
+
+    response.setContentType("application/json;");
+    response.getWriter().println("{ \"status\": \"ok\" }");
   }
 }

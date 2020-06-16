@@ -20,10 +20,10 @@ import com.google.appengine.api.datastore.Entity;
 public class Comment {
 
   /* Comment poster */
-  private String commentPoster;
+  private String nickname;
 
   /* Comment text */
-  private String commentText;
+  private String text;
 
   /* Comment sentiment */
   private float sentimentScore;
@@ -31,41 +31,32 @@ public class Comment {
   /**
    * Constructs a comment object with given text
    *
-   * @param commentPoster the username of the poster
-   * @param commentText the comment text
+   * @param nickname the username of the poster
+   * @param text the comment text
    * @param sentimentScore the sentiment of the comment
    */
-  public Comment(String commentPoster, String commentText, float sentimentScore) {
-    this.commentPoster = commentPoster;
-    this.commentText = commentText;
+  public Comment(String nickname, String text, float sentimentScore) {
+    this.nickname = nickname;
+    this.text = text;
     this.sentimentScore = sentimentScore;
   }
 
-  /**
-   * Constructs a comment object by unmarshalling an entity
-   *
-   * @param entity the entity to unmarshall
-   */
-  private Comment(Entity entity) {
-    entityUnmarshall(entity);
+  /** Getter and setter for nickname */
+  public String getNickname() {
+    return nickname;
   }
 
-  /** Getter and setter for commentPoster */
-  public String getCommentPoster() {
-    return commentPoster;
+  public void setNickname(String nickname) {
+    this.nickname = nickname;
   }
 
-  public void setCommentPoster(String commentPoster) {
-    this.commentPoster = commentPoster;
+  /** Getter and setter for text */
+  public String getText() {
+    return text;
   }
 
-  /** Getter and setter for commentText */
-  public String getCommentText() {
-    return commentText;
-  }
-
-  public void setCommentText(String commentText) {
-    this.commentText = commentText;
+  public void setText(String text) {
+    this.text = text;
   }
 
   /** Getter and setter for sentimentScore */
@@ -78,38 +69,18 @@ public class Comment {
   }
 
   /**
-   * Marshalls the current class instance into a Datastore entity.
-   *
-   * @param entity the entity to marshall data into.
-   */
-  public void entityMarshall(Entity entity) {
-    entity.setProperty("poster", commentPoster);
-    entity.setProperty("text", commentText);
-    entity.setProperty("sentiment-score", sentimentScore);
-  }
-
-  /**
-   * Unmarshalls the provided Datastore entity into this class instance, overwriting the instance's
-   * current fields.
-   *
-   * @param entity the entity to unmarshall data from.
-   */
-  public void entityUnmarshall(Entity entity) {
-    commentPoster = (String) entity.getProperty("poster");
-    commentText = (String) entity.getProperty("text");
-    Double score = (Double) entity.getProperty("sentiment-score");
-    sentimentScore = score.floatValue();
-  }
-
-  /**
    * Generates a comment from an entity
    *
    * @param entity the entity to generate the comment from
    * @return the new comment with the entity's information.
    */
   public static Comment from(Entity entity) {
-    // Elegant wrapper for private constructor.
-    return new Comment(entity);
+    Comment comment = new Comment();
+    comment.nickname = (String) entity.getProperty("nickname");
+    comment.text = (String) entity.getProperty("text");
+    Double score = (Double) entity.getProperty("sentiment-score");
+    comment.sentimentScore = score.floatValue();
+    return comment;
   }
 
   /**
@@ -122,7 +93,9 @@ public class Comment {
     // Fill timestamp
     entity.setProperty("timestamp", System.currentTimeMillis());
     // Fill rest of comment
-    entityMarshall(entity);
+    entity.setProperty("nickname", nickname);
+    entity.setProperty("text", text);
+    entity.setProperty("sentiment-score", sentimentScore);
     return entity;
   }
 }

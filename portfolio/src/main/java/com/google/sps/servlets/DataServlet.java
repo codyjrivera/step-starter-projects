@@ -107,28 +107,28 @@ public class DataServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
 
-    if (userService.isUserLoggedIn()) {
-      // Constructs comment and gets comment sentiment
-      String commentPoster = userService.getCurrentUser().getNickname();
-      String commentText = getParameter(request, "comment-text", "");
-      float commentSentiment = getSentiment(commentText);
-
-      Comment comment = new Comment(commentPoster, commentText, commentSentiment);
-
-      // Create entity
-      Entity commentEntity = comment.toEntity();
-
-      // Add to database
-      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-      datastore.put(commentEntity);
-
-      response.setContentType("application/json;");
-      response.getWriter().println("{ \"status\": \"ok\" }");
-    } else {
+    if (!userService.isUserLoggedIn()) {
       // Return user not logged in
       response.setContentType("application/json;");
       response.getWriter().println("{ \"status\": \"no-login\" }");
+      return;
     }
+    // Constructs comment and gets comment sentiment
+    String poster = userService.getCurrentUser().getNickname();
+    String text = getParameter(request, "comment-text", "");
+    float sentiment = getSentiment(commentText);
+
+    Comment comment = new Comment(poster, text, sentiment);
+
+    // Create entity
+    Entity commentEntity = comment.toEntity();
+
+    // Add to database
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(commentEntity);
+
+    response.setContentType("application/json;");
+    response.getWriter().println("{ \"status\": \"ok\" }");
   }
 
   /**
