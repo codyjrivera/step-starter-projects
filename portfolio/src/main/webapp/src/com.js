@@ -126,8 +126,8 @@ function deleteAllCommentsFromServer() {
  * and sentiment score if it is provided.
  *
  * @param {string} commentText
- * @param {any} commentPoster
- * @param {any} sentimentScore Potential sentiment score,
+ * @param {string | undefined} commentPoster
+ * @param {number | undefined} sentimentScore Potential sentiment score,
  * or undefined if no score to be displayed.
  * @return {Element}
  */
@@ -321,9 +321,8 @@ document
 /** Not Logged In modal close */
 document
   .getElementById('no-login-modal-close')
-  .addEventListener(
-    'click',
-    () => (document.getElementById('no-login-modal').setAttribute('hidden', '')),
+  .addEventListener('click', () =>
+    document.getElementById('no-login-modal').setAttribute('hidden', ''),
   );
 
 /** Once the page loads, request comments */
