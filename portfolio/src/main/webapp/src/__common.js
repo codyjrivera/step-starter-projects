@@ -161,7 +161,7 @@ function createButtonLink(buttonLabel, buttonLink) {
  * Gets the user's login status, username, and
  * login API url from the server.
  *
- * @return {Promise<any>}
+ * @return {Promise<Object>}
  */
 function getLoginStatus() {
   return fetch('/login').then((response) => {

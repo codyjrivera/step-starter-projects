@@ -41,6 +41,11 @@ new MDCRipple(document.querySelector('.mdc-button'));
 new MDCRipple(document.querySelector('.mdc-fab'));
 
 /**
+ * Server response statuses.
+ */
+const NO_LOGIN_STATUS = 'no-login';
+
+/**
  * Gets comments data from server by submitting a GET
  * request to /data. Returns the comments as a JavaScript
  * value promise. maxComments constrains the number of comments
@@ -48,7 +53,7 @@ new MDCRipple(document.querySelector('.mdc-fab'));
  * Otherwise, all comments are returned.
  *
  * @param {string} maxComments
- * @return {Promise<any>}
+ * @return {Promise<Array<Object>>}
  */
 function getCommentsFromServer(maxComments) {
   return fetch('/data' + '?max-comments=' + maxComments).then((response) => {
@@ -70,7 +75,7 @@ function getCommentsFromServer(maxComments) {
  * 'ok' or a reason for failure.
  *
  * @param {string} commentText
- * @return {Promise<any>}
+ * @return {Promise<Object>}
  */
 function submitCommentToServer(commentText) {
   // Package POST arguments
@@ -100,7 +105,7 @@ function submitCommentToServer(commentText) {
  * an object containing the field 'success', which contains
  * 'ok' or a reason for failure.
  *
- * @return {Promise<any>}
+ * @return {Promise<Object>}
  */
 function deleteAllCommentsFromServer() {
   return fetch('/delete-data', {
@@ -134,7 +139,7 @@ function createCommentCard(
   const cardElement = document.createElement('div');
   cardElement.classList.add('port-card');
 
-  if (typeof commentPoster === 'string') {
+  if (commentPoster) {
     const cardTitle = document.createElement('div');
     cardTitle.classList.add('port-card-title');
     cardTitle.innerHTML = commentPoster + ' writes:';
@@ -166,7 +171,7 @@ function createCommentCard(
  * should be of type Array<Comment>, otherwise,
  * addCommentsToPage will throw an exception.
  *
- * @param {any} comments
+ * @param {Array<Object>} comments
  */
 function addCommentsToPage(comments) {
   // Clear existing HTML
@@ -258,7 +263,7 @@ function handleAddComment() {
   submitCommentToServer(commentText)
     .then((response) => {
       // Displays login error message.
-      if (response.status === 'no-login') {
+      if (response.status === NO_LOGIN_STATUS) {
         document.getElementById('no-login-modal-message').innerHTML =
           'You must be logged in to submit a comment.';
         // Show message.
@@ -279,11 +284,11 @@ function handleDeleteAllComments() {
   deleteAllCommentsFromServer()
     .then((response) => {
       // Displays login error message.
-      if (response.status === 'no-login') {
+      if (response.status === NO_LOGIN_STATUS) {
         document.getElementById('no-login-modal-message').innerHTML =
           'You must be logged in to delete all comments.';
         // Show message.
-        document.getElementById('no-login-modal').style.display = 'flex';
+        document.getElementById('no-login-modal').removeAttribute('hidden');
       }
       handleUpdateComments();
     })
@@ -318,7 +323,7 @@ document
   .getElementById('no-login-modal-close')
   .addEventListener(
     'click',
-    () => (document.getElementById('no-login-modal').style.display = 'none'),
+    () => (document.getElementById('no-login-modal').setAttribute('hidden', '')),
   );
 
 /** Once the page loads, request comments */
