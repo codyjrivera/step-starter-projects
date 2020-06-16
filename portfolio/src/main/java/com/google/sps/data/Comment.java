@@ -28,9 +28,6 @@ public class Comment {
   /* Comment sentiment */
   private float sentimentScore;
 
-  /** Private empty constructor */
-  private Comment() {}
-
   /**
    * Constructs a comment object with given text
    *
@@ -78,12 +75,11 @@ public class Comment {
    * @return the new comment with the entity's information.
    */
   public static Comment from(Entity entity) {
-    Comment comment = new Comment();
-    comment.nickname = (String) entity.getProperty("nickname");
-    comment.text = (String) entity.getProperty("text");
+    String nickname = (String) entity.getProperty("nickname");
+    String text = (String) entity.getProperty("text");
     Double score = (Double) entity.getProperty("sentiment-score");
-    comment.sentimentScore = score.floatValue();
-    return comment;
+    float sentimentScore = score.floatValue();
+    return new Comment(nickname, text, sentimentScore);
   }
 
   /**
