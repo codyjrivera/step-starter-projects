@@ -36,6 +36,12 @@
   @extend .mdc-typography;
 }
 
+// Style login-logout icon.
+.svg-icon {
+  padding-top: 0.25em;
+  width: 1.5em;
+}
+
 // Material-styled lists
 ul {
   @extend .mdc-typography;
@@ -43,6 +49,28 @@ ul {
 
 li {
   @extend .mdc-typography--body1;
+}
+
+// Modal class
+.modal {
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: #000000;
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+  margin-bottom: auto !important;
+  margin-top: 15%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
 }
 
 // Give default tags Material styles

@@ -41,6 +41,11 @@ new MDCRipple(document.querySelector('.mdc-button'));
 new MDCRipple(document.querySelector('.mdc-fab'));
 
 /**
+ * Server response statuses.
+ */
+const NO_LOGIN_STATUS = 'no-login';
+
+/**
  * Gets comments data from server by submitting a GET
  * request to /data. Returns the comments as a JavaScript
  * value promise. maxComments constrains the number of comments
@@ -48,17 +53,16 @@ new MDCRipple(document.querySelector('.mdc-fab'));
  * Otherwise, all comments are returned.
  *
  * @param {string} maxComments
- * @return {Promise<any>}
+ * @return {Promise<Array<Object>>}
  */
 function getCommentsFromServer(maxComments) {
   return fetch('/data' + '?max-comments=' + maxComments).then((response) => {
-    if (response.ok) {
-      return response.json();
-    } else {
+    if (!response.ok) {
       return Promise.reject(
         new Error(response.status + ': ' + response.statusText),
       );
     }
+    return response.json();
   });
 }
 
@@ -66,10 +70,11 @@ function getCommentsFromServer(maxComments) {
  * Adds comment data to the server by submitting a POST
  * request to /data. commentText contains the string that
  * will be stored in the comment. Returns a promise with
- * an undefined value on success.
+ * an object containing the field 'success', which contains
+ * 'ok' or a reason for failure.
  *
  * @param {string} commentText
- * @return {Promise<any>}
+ * @return {Promise<Object>}
  */
 function submitCommentToServer(commentText) {
   // Package POST arguments
@@ -83,49 +88,60 @@ function submitCommentToServer(commentText) {
     },
     body: args,
   }).then((response) => {
-    if (response.ok) {
-      return response.json();
-    } else {
+    if (!response.ok) {
       return Promise.reject(
         new Error(response.status + ': ' + response.statusText),
       );
     }
+    return response.json();
   });
 }
 
 /**
  * Deletes all comments data from server by submitting a
  * POST request to /delete-data. Returns a promise with
- * an undefined value on success.
+ * an object containing the field 'success', which contains
+ * 'ok' or a reason for failure.
  *
- * @return {Promise<any>}
+ * @return {Promise<Object>}
  */
 function deleteAllCommentsFromServer() {
   return fetch('/delete-data', {
     method: 'POST',
   }).then((response) => {
-    if (response.ok) {
-      return response.json();
-    } else {
+    if (!response.ok) {
       return Promise.reject(
         new Error(response.status + ': ' + response.statusText),
       );
     }
+    return response.json();
   });
 }
 
 /**
- * Creates a comment card with the given comment text
+ * Creates a comment card with the given comment poster, comment text
  * and sentiment score if it is provided.
  *
  * @param {string} commentText
- * @param {any} sentimentScore Potential sentiment score,
+ * @param {string | undefined} commentNickname
+ * @param {number | undefined} sentimentScore Potential sentiment score,
  * or undefined if no score to be displayed.
  * @return {Element}
  */
-function createCommentCard(commentText, sentimentScore = undefined) {
+function createCommentCard(
+  commentText,
+  commentNickname = undefined,
+  sentimentScore = undefined,
+) {
   const cardElement = document.createElement('div');
   cardElement.classList.add('port-card');
+
+  if (commentNickname) {
+    const cardTitle = document.createElement('div');
+    cardTitle.classList.add('port-card-title');
+    cardTitle.innerHTML = commentNickname + ' writes:';
+    cardElement.appendChild(cardTitle);
+  }
 
   const cardContents = document.createElement('div');
   cardContents.classList.add('port-card-contents');
@@ -133,7 +149,7 @@ function createCommentCard(commentText, sentimentScore = undefined) {
 
   cardElement.appendChild(cardContents);
 
-  if (typeof sentimentScore == 'number') {
+  if (typeof sentimentScore === 'number') {
     const cardActions = document.createElement('div');
     cardActions.classList.add('port-card-actions');
     const sentimentCard = document.createElement('div');
@@ -152,14 +168,15 @@ function createCommentCard(commentText, sentimentScore = undefined) {
  * should be of type Array<Comment>, otherwise,
  * addCommentsToPage will throw an exception.
  *
- * @param {any} comments
+ * @param {Array<Object>} comments
  */
 function addCommentsToPage(comments) {
   // Clear existing HTML
   document.getElementById('comment-list').innerHTML = '';
   comments.forEach((comment) => {
     const newCard = createCommentCard(
-      comment.commentText,
+      comment.text,
+      comment.nickname,
       comment.sentimentScore,
     );
     document.getElementById('comment-list').appendChild(newCard);
@@ -241,7 +258,16 @@ function handleAddComment() {
   const commentText = el.value;
   el.value = '';
   submitCommentToServer(commentText)
-    .then(handleUpdateComments)
+    .then((response) => {
+      // Displays login error message.
+      if (response.status === NO_LOGIN_STATUS) {
+        document.getElementById('no-login-modal-message').innerHTML =
+          'You must be logged in to submit a comment.';
+        // Show message.
+        document.getElementById('no-login-modal').style.display = 'flex';
+      }
+      handleUpdateComments();
+    })
     .catch((error) =>
       handleCommentError(error, 'Unable to add comment to server'),
     );
@@ -253,7 +279,16 @@ function handleAddComment() {
  */
 function handleDeleteAllComments() {
   deleteAllCommentsFromServer()
-    .then(handleUpdateComments)
+    .then((response) => {
+      // Displays login error message.
+      if (response.status === NO_LOGIN_STATUS) {
+        document.getElementById('no-login-modal-message').innerHTML =
+          'You must be logged in to delete all comments.';
+        // Show message.
+        document.getElementById('no-login-modal').removeAttribute('hidden');
+      }
+      handleUpdateComments();
+    })
     .catch((error) =>
       handleCommentError(error, 'Unable to delete comments from server'),
     );
@@ -279,6 +314,13 @@ document.getElementById('comment-text').addEventListener('keyup', (event) => {
 document
   .getElementById('comment-number')
   .addEventListener('change', handleUpdateComments);
+
+/** Not Logged In modal close */
+document
+  .getElementById('no-login-modal-close')
+  .addEventListener('click', () =>
+    document.getElementById('no-login-modal').setAttribute('hidden', ''),
+  );
 
 /** Once the page loads, request comments */
 handleUpdateComments();
