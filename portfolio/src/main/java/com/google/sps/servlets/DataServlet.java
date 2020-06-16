@@ -116,7 +116,7 @@ public class DataServlet extends HttpServlet {
     // Constructs comment and gets comment sentiment
     String poster = userService.getCurrentUser().getNickname();
     String text = getParameter(request, "comment-text", "");
-    float sentiment = getSentiment(commentText);
+    float sentiment = getSentiment(text);
 
     Comment comment = new Comment(poster, text, sentiment);
 

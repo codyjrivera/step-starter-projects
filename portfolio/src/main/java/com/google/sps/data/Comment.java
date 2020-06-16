@@ -28,6 +28,9 @@ public class Comment {
   /* Comment sentiment */
   private float sentimentScore;
 
+  /** Private empty constructor */
+  private Comment() {}
+
   /**
    * Constructs a comment object with given text
    *

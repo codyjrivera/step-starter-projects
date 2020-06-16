@@ -123,23 +123,23 @@ function deleteAllCommentsFromServer() {
  * and sentiment score if it is provided.
  *
  * @param {string} commentText
- * @param {string | undefined} commentPoster
+ * @param {string | undefined} commentNickname
  * @param {number | undefined} sentimentScore Potential sentiment score,
  * or undefined if no score to be displayed.
  * @return {Element}
  */
 function createCommentCard(
   commentText,
-  commentPoster = undefined,
+  commentNickname = undefined,
   sentimentScore = undefined,
 ) {
   const cardElement = document.createElement('div');
   cardElement.classList.add('port-card');
 
-  if (commentPoster) {
+  if (commentNickname) {
     const cardTitle = document.createElement('div');
     cardTitle.classList.add('port-card-title');
-    cardTitle.innerHTML = commentPoster + ' writes:';
+    cardTitle.innerHTML = commentNickname + ' writes:';
     cardElement.appendChild(cardTitle);
   }
 
@@ -175,8 +175,8 @@ function addCommentsToPage(comments) {
   document.getElementById('comment-list').innerHTML = '';
   comments.forEach((comment) => {
     const newCard = createCommentCard(
-      comment.commentText,
-      comment.commentPoster,
+      comment.text,
+      comment.nickname,
       comment.sentimentScore,
     );
     document.getElementById('comment-list').appendChild(newCard);
