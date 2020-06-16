@@ -57,13 +57,12 @@ const NO_LOGIN_STATUS = 'no-login';
  */
 function getCommentsFromServer(maxComments) {
   return fetch('/data' + '?max-comments=' + maxComments).then((response) => {
-    if (response.ok) {
-      return response.json();
-    } else {
+    if (!response.ok) {
       return Promise.reject(
         new Error(response.status + ': ' + response.statusText),
       );
     }
+    return response.json();
   });
 }
 
@@ -89,13 +88,12 @@ function submitCommentToServer(commentText) {
     },
     body: args,
   }).then((response) => {
-    if (response.ok) {
-      return response.json();
-    } else {
+    if (!response.ok) {
       return Promise.reject(
         new Error(response.status + ': ' + response.statusText),
       );
     }
+    return response.json();
   });
 }
 
@@ -111,13 +109,12 @@ function deleteAllCommentsFromServer() {
   return fetch('/delete-data', {
     method: 'POST',
   }).then((response) => {
-    if (response.ok) {
-      return response.json();
-    } else {
+    if (!response.ok) {
       return Promise.reject(
         new Error(response.status + ': ' + response.statusText),
       );
     }
+    return response.json();
   });
 }
 

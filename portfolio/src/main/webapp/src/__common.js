@@ -165,13 +165,12 @@ function createButtonLink(buttonLabel, buttonLink) {
  */
 function getLoginStatus() {
   return fetch('/login').then((response) => {
-    if (response.ok) {
-      return response.json();
-    } else {
+    if (!response.ok) {
       return Promise.reject(
         new Error(response.status + ': ' + response.statusText),
       );
     }
+    return response.json();
   });
 }
 
