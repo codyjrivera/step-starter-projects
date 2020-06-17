@@ -17,18 +17,21 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.cloud.language.v1.Sentiment;
 import com.google.gson.Gson;
 import com.google.sps.data.Comment;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -70,15 +73,16 @@ public class DataServlet extends HttpServlet {
     }
 
     // Gets all existing comments from database
-    List<Comment> commentsList = new ArrayList<Comment>();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
-    for (Entity entity : results.asIterable()) {
-      Comment com = new Comment(entity);
-      commentsList.add(com);
-    }
+
+    // Map entities into Comment instances.
+    List<Comment> commentsList =
+        results.asList(FetchOptions.Builder.withDefaults()).stream()
+            .map(Comment::from)
+            .collect(Collectors.toList());
 
     // If max-comments was provided, extract a sublist.
     if (hasMaxComments) {
@@ -87,34 +91,37 @@ public class DataServlet extends HttpServlet {
 
     // Convert List of comments to JSON.
     Gson gson = new Gson();
-    String commentsListJson = gson.toJson(commentsList);
     response.setContentType("application/json;");
-    response.getWriter().println(commentsListJson);
+    response.getWriter().println(gson.toJson(commentsList));
   }
 
   /**
-   * Processes HTTP POST requests for the /data servlet The requests are responded to by appending
-   * the 'comment-text' argument of the POST request to the Datastore database. The client is then
-   * redirected back to the com.html page.
+   * Processes HTTP POST requests for the /data servlet The requests are responded to by appending a
+   * comment to the datastore database. All necessary fields will be assembled here. If the user is
+   * not logged in, then the status field in the response json will be set to 'no-login'
    *
    * @param request Information about the POST Request
    * @param response Information about the servlet's response
    */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Constructs comment and gets comment sentiment
-    String commentText = getParameter(request, "comment-text", "");
-    float commentSentiment = getSentiment(commentText);
+    UserService userService = UserServiceFactory.getUserService();
 
-    Comment comment = new Comment(commentText);
-    comment.setSentimentScore(commentSentiment);
+    if (!userService.isUserLoggedIn()) {
+      // Return user not logged in
+      response.setContentType("application/json;");
+      response.getWriter().println("{ \"status\": \"no-login\" }");
+      return;
+    }
+    // Constructs comment and gets comment sentiment
+    String poster = userService.getCurrentUser().getNickname();
+    String text = getParameter(request, "comment-text", "");
+    float sentiment = getSentiment(text);
+
+    Comment comment = new Comment(poster, text, sentiment);
 
     // Create entity
-    long timestamp = System.currentTimeMillis();
-    Entity commentEntity = new Entity("Comment");
-    commentEntity.setProperty("timestamp", timestamp);
-    // Transfers data from Comment class to entity.
-    comment.entityMarshall(commentEntity);
+    Entity commentEntity = comment.toEntity();
 
     // Add to database
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
