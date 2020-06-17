@@ -63,9 +63,14 @@ public final class FindMeetingQuery {
    * <p>- To build the set of valid meeting times, I find the set of invalid meeting times and take
    * the complement of that set.
    *
-   * <p>- The following is a sketch of how I build the set of invalid meeting times: S = the empty
-   * set for each m in the set of all meetings, if INTERSECT(request's attendees, m's attendees) is
-   * non-empty, (1) S := UNION(S, m's time range) (2)
+   * <p>- The following is a sketch of how I build the set of invalid meeting times:
+   *
+   * <pre>
+   * S = the empty set
+   * for each m in the set of all meetings,
+   *   if INTERSECT(request's attendees, m's attendees) is non-empty, (1)
+   *     S := UNION(S, m's time range) (2)
+   * </pre>
    *
    * <p>- I choose an appropriate implementation for each of the abstract operations above. (1) is
    * implemented as a hashtable lookup, where each of m's attendees is looked up in the prepared
