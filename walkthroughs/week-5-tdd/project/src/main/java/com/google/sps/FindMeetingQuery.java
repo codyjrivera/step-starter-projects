@@ -53,7 +53,7 @@ public final class FindMeetingQuery {
     Set<String> requestedAttendees = new HashSet<String>(request.getAttendees());
 
     // Expected O(E log E) time
-    SortedMap<Long, TimeRange> rawConflictSet = generateRawConflictSet(events, requestedAttendees);
+    SortedMap<Integer, TimeRange> rawConflictSet = generateRawConflictSet(events, requestedAttendees);
     Collection<TimeRange> conflictSet = cleanConflictSet(rawConflictSet.values());
     return getValidTimes(conflictSet, request.getDuration());
   }
@@ -89,20 +89,20 @@ public final class FindMeetingQuery {
    * @param requestedAttendees the set of all requested attendees.
    * @return a map of potentially overlapping time ranges, with the start time as the key
    */
-  private SortedMap<Long, TimeRange> generateRawConflictSet(Collection<Event> events, Set<String> requestedAttendees) {
-    SortedMap<Long, TimeRange> rawConflictSet = new TreeMap<Long, TimeRange>();
+  private SortedMap<Integer, TimeRange> generateRawConflictSet(Collection<Event> events, Set<String> requestedAttendees) {
+    SortedMap<Integer, TimeRange> rawConflictSet = new TreeMap<Integer, TimeRange>();
     for (Event event : events) {
       if (attendeesIntersect(event.getAttendees(), requestedAttendees)) {
         TimeRange eventTime = event.getWhen();
-        if (rawConflictSet.containsKey((long) eventTime.start())) {
+        if (rawConflictSet.containsKey(eventTime.start())) {
           // If an event with the same start time is in the set,
           // keep the longest event
           TimeRange setTime = rawConflictSet.get(eventTime.start());
           if (eventTime.duration() > setTime.duration()) {
-            rawConflictSet.put((long) eventTime.start(), eventTime);
+            rawConflictSet.put(eventTime.start(), eventTime);
           }
         } else {
-          rawConflictSet.put((long) eventTime.start(), eventTime);
+          rawConflictSet.put(eventTime.start(), eventTime);
         }
       }
     }
@@ -138,7 +138,7 @@ public final class FindMeetingQuery {
     List<TimeRange> conflictSet = new ArrayList<TimeRange>();
     // Temporary TimeRange construction information
     boolean tempRangeFlag = false;
-    long startTime = 0, endTime = 0;
+    int startTime = 0, endTime = 0;
 
     for (TimeRange rawRange : rawConflictSet) {
       if (!tempRangeFlag) {
@@ -151,10 +151,10 @@ public final class FindMeetingQuery {
           // Temporary time range := UNION(temporary time range, RawRange)
           // Because rawConflictSet is sorted, we do not need to consider
           // the case where rawRange.start() < startTime.
-          endTime = Long.max(rawRange.end(), endTime);
+          endTime = Integer.max(rawRange.end(), endTime);
         } else {
           // Add temporary time range
-          conflictSet.add(TimeRange.fromStartEnd((int) startTime, (int) endTime, false));
+          conflictSet.add(TimeRange.fromStartEnd(startTime, endTime, false));
           // Start another temporary time range
           startTime = rawRange.start();
           endTime = rawRange.end();
@@ -164,7 +164,7 @@ public final class FindMeetingQuery {
 
     // Add last time range, if such a range exists.
     if (tempRangeFlag) {
-      conflictSet.add(TimeRange.fromStartEnd((int) startTime, (int) endTime, false));
+      conflictSet.add(TimeRange.fromStartEnd(startTime, endTime, false));
     }
     return conflictSet;
   }
@@ -180,11 +180,11 @@ public final class FindMeetingQuery {
    */
   private Collection<TimeRange> getValidTimes(Collection<TimeRange> conflictSet, long minDuration) {
     List<TimeRange> validTimes = new ArrayList<TimeRange>();
-    long startTime = TimeRange.START_OF_DAY;
+    int startTime = TimeRange.START_OF_DAY;
 
     for (TimeRange conflictRange : conflictSet) {
-      if (conflictRange.start() - startTime >= minDuration) {
-        validTimes.add(TimeRange.fromStartEnd((int) startTime, (int) conflictRange.start(), false));
+      if ((long) (conflictRange.start() - startTime) >= minDuration) {
+        validTimes.add(TimeRange.fromStartEnd(startTime, conflictRange.start(), false));
       }
       // Skip over entire conflict region.
       startTime = conflictRange.end();
@@ -192,7 +192,7 @@ public final class FindMeetingQuery {
 
     // Final element
     if (TimeRange.END_OF_DAY - startTime >= minDuration) {
-      validTimes.add(TimeRange.fromStartEnd((int) startTime, (int) TimeRange.END_OF_DAY, true));
+      validTimes.add(TimeRange.fromStartEnd(startTime, TimeRange.END_OF_DAY, true));
     }
     return validTimes;
   }
