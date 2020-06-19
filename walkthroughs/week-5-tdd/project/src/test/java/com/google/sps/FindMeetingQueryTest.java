@@ -318,7 +318,7 @@ public final class FindMeetingQueryTest {
    * Tests for optional attendees, where the choice is either
    * to include all of them or none of them.
    */
-
+  
   @Test
   public void optionalAttendeeAllDay() {
     // Based on everyAttendeeIsConsidered, but there is an optional person C with

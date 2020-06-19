@@ -60,9 +60,7 @@ public final class FindMeetingQuery {
 
     List<TimeRange> conflictSet = cleanConflictSet(rawConflictSet.values());
     List<TimeRange> optionalConflictSet = cleanConflictSet(rawOptionalConflictSet.values());
-    //System.out.println(optionalConflictSet);    
     List<TimeRange> combinedConflictSet = combineConflictSets(conflictSet, optionalConflictSet);
-    //System.out.println(combinedConflictSet);    
 
     Collection<TimeRange> combinedValidTimes = getValidTimes(combinedConflictSet, request.getDuration());
     if (!combinedValidTimes.isEmpty()) {
@@ -237,7 +235,7 @@ public final class FindMeetingQuery {
         rawRange = setA.get(indexA);
         ++indexA;
       } else {
-        rawRange = setA.get(indexB);
+        rawRange = setB.get(indexB);
         ++indexB;
       }
 
