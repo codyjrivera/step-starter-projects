@@ -14,11 +14,10 @@
 
 package com.google.sps;
 
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
@@ -30,8 +29,8 @@ import java.util.TreeMap;
  * scheduled on a day. The algorithm returns a collection of time intervals at least as long as the
  * requested meeting time.
  *
- * <p>This algorithm generates time intervals in which ALL mandatory attendees are free and, if 
- * such a valid interval exists, intervals in which all optional attendees are free as well.
+ * <p>This algorithm generates time intervals in which ALL mandatory attendees are free and, if such
+ * a valid interval exists, intervals in which all optional attendees are free as well.
  *
  * <p>This algorithm's *expected* runtime is O(M + E log E), where M = the number of mandatory
  * attendees and E = the number of events and each of their attendees.
@@ -56,13 +55,15 @@ public final class FindMeetingQuery {
     // Expected O(E log E) time
     SortedMap<Integer, TimeRange> rawConflictSet = new TreeMap<Integer, TimeRange>();
     SortedMap<Integer, TimeRange> rawOptionalConflictSet = new TreeMap<Integer, TimeRange>();
-    generateRawConflictSet(rawConflictSet, rawOptionalConflictSet, events, requestedAttendees, optionalAttendees);
+    generateRawConflictSet(
+        rawConflictSet, rawOptionalConflictSet, events, requestedAttendees, optionalAttendees);
 
     List<TimeRange> conflictSet = cleanConflictSet(rawConflictSet.values());
     List<TimeRange> optionalConflictSet = cleanConflictSet(rawOptionalConflictSet.values());
     List<TimeRange> combinedConflictSet = combineConflictSets(conflictSet, optionalConflictSet);
 
-    Collection<TimeRange> combinedValidTimes = getValidTimes(combinedConflictSet, request.getDuration());
+    Collection<TimeRange> combinedValidTimes =
+        getValidTimes(combinedConflictSet, request.getDuration());
     if (!combinedValidTimes.isEmpty()) {
       return combinedValidTimes;
     }
@@ -98,35 +99,35 @@ public final class FindMeetingQuery {
    * entries. Thus, the second phase, done outside of the loop, converts the raw set in O(n) time
    * into a set without overlapping entries.
    *
-   * <p> To incorporate optional attendees, I duplicate operations (1) and (2) for optional attendees,
-   * storing the results in another set and cleaning that set separately. I then create another cleaned
-   * set that is the combination of the mandatory and optional attendees' conflict sets. If there is
-   * a set of times that works for all attendees, then those times are returned, otherwise, only mandatory
-   * attendees are considered. Asymptotic runtime does not change, as the extra work can be absorbed
-   * by a constant factor.
+   * <p>To incorporate optional attendees, I duplicate operations (1) and (2) for optional
+   * attendees, storing the results in another set and cleaning that set separately. I then create
+   * another cleaned set that is the combination of the mandatory and optional attendees' conflict
+   * sets. If there is a set of times that works for all attendees, then those times are returned,
+   * otherwise, only mandatory attendees are considered. Asymptotic runtime does not change, as the
+   * extra work can be absorbed by a constant factor.
    */
 
   /**
    * Generates a set of time ranges that conflict with any of the requested attendees' schedules.
-   * Note that ranges may overlap. Expected runtime is O(E log E). Sets are represented as
-   * a SortedMap with start time as the key and TimeRange as the value.
+   * Note that ranges may overlap. Expected runtime is O(E log E). Sets are represented as a
+   * SortedMap with start time as the key and TimeRange as the value.
    *
-   * @param rawConflictSet Overlapping set of all 
+   * @param rawConflictSet Overlapping set of all
    * @param events the collection of all events
    * @param requestedAttendees the set of all requested attendees.
    */
   private void generateRawConflictSet(
       SortedMap<Integer, TimeRange> rawConflictSet,
       SortedMap<Integer, TimeRange> rawOptionalConflictSet,
-      Collection<Event> events, 
+      Collection<Event> events,
       Set<String> requestedAttendees,
       Set<String> optionalAttendees) {
     for (Event event : events) {
       if (attendeesIntersect(event.getAttendees(), requestedAttendees)) {
         insertTimeRange(rawConflictSet, event.getWhen());
-      } 
+      }
       if (attendeesIntersect(event.getAttendees(), optionalAttendees)) {
-        insertTimeRange(rawOptionalConflictSet, event.getWhen());  
+        insertTimeRange(rawOptionalConflictSet, event.getWhen());
       }
     }
   }
@@ -150,8 +151,7 @@ public final class FindMeetingQuery {
   }
 
   /**
-   * Inserts a time range into a SortedMap containing an ordered overlapping set
-   * of times.
+   * Inserts a time range into a SortedMap containing an ordered overlapping set of times.
    *
    * @param rawSet The set of times
    * @param timeRange The range to insert
@@ -163,7 +163,7 @@ public final class FindMeetingQuery {
       TimeRange setTime = rawSet.get(timeRange.start());
       if (timeRange.duration() > setTime.duration()) {
         rawSet.put(timeRange.start(), timeRange);
-      } 
+      }
     } else {
       rawSet.put(timeRange.start(), timeRange);
     }
@@ -188,8 +188,8 @@ public final class FindMeetingQuery {
   }
 
   /**
-   * Combines two existing sorted and cleaned conflict sets. This is basically
-   * merging with extra considerations for end times. Runtime O(E).
+   * Combines two existing sorted and cleaned conflict sets. This is basically merging with extra
+   * considerations for end times. Runtime O(E).
    *
    * @param setA the first conflict set
    * @param setB the second conflict set
@@ -226,11 +226,7 @@ public final class FindMeetingQuery {
     return builder.getFlatRangeSet();
   }
 
-  /**
-   * Builds a flattened range set, where none of the
-   * elements overlap.
-   *
-   */
+  /** Builds a flattened range set, where none of the elements overlap. */
   private class FlatRangeSetBuilder {
     private List<TimeRange> rangeSet;
     // Temporary range
@@ -238,9 +234,7 @@ public final class FindMeetingQuery {
     private int endTime;
     private boolean flag;
 
-    /**
-     * Makes a new FlatRangeSetBuilder
-     */
+    /** Makes a new FlatRangeSetBuilder */
     FlatRangeSetBuilder() {
       rangeSet = new ArrayList<TimeRange>();
       startTime = 0;
@@ -276,8 +270,8 @@ public final class FindMeetingQuery {
     }
 
     /**
-     * Returns the non-overlapping range set as a list of time ranges.
-     * Behavior after calling this method is undefined.
+     * Returns the non-overlapping range set as a list of time ranges. Behavior after calling this
+     * method is undefined.
      *
      * @return non-overlapping range set
      */
@@ -288,7 +282,6 @@ public final class FindMeetingQuery {
       return rangeSet;
     }
   }
-
 
   /**
    * Converts a set of conflicting time intervals into a set of good time intervals that are at
