@@ -232,6 +232,7 @@ public final class FindMeetingQuery {
     // Temporary range
     private int startTime;
     private int endTime;
+    // Whether there is a temporary range that is currently being built
     private boolean flag;
 
     /** Makes a new FlatRangeSetBuilder */
